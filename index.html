@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Wizytówka</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Asap:400,600&subset=latin-ext');
+      
+      body {
+        background-color: rgb(240, 246, 255);
+        font-family: 'Asap', sans-serif;
+        font-size: 125%;
+      }
+
+      .container {
+        margin: 4em auto 0 auto;
+        padding: 0 1em 1em;
+        background-color: rgb(202, 220, 247);
+        width: 70vw;
+      }
+
+      header {
+        font-size: 3rem;
+        padding: 1rem 0;
+        font-weight: 300;
+      }
+
+      .title {
+        font-size: 1.5rem;
+      }
+
+      .description {
+        margin: 0.5rem 0;
+        background-color: rgb(255, 231, 197);;
+        width: 100%;
+        height: 100%;
+      } 
+
+      .description > p {
+        margin: 0;
+        padding: 1rem;
+      }
+
+      .details {
+        display: flex;
+        font-size: 1.3rem;
+      }
+      
+      .details-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .details-section:first-child {
+        padding-right: 0.5rem;
+      }
+
+      .details-section:last-child {
+        padding-left: 0.5rem;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>Jan Kowalski</header>
+      <div class="details">
+        <div class="details-section">
+            <div class="title">
+              Co robię?
+            </div>
+              <div class="description">
+                <p>
+                  Jestem studentem Informatyki WPPT.
+                </p>
+              </div>
+        </div>
+        <div class="details-section">
+            <div class="title">
+              Co lubię?
+            </div>
+              <div class="description">
+                <ul>
+                  <li>pływać</li>
+                  <li>czytać</li>
+                  <li>programować</li>
+                  <li>fotografować</li>
+                </ul>
+            </div>
+        </div>
+      </div>
+      <div class="address">
+        <div class="title">
+          Adres:
+        </div>
+        <div class="description">
+          <p>
+              Droga mleczna;
+              układ słoneczny (taka mała gwiazda klasy G2V w wewnętrznej części Ramienia Oriona); trzecia planeta od słonca;
+              kontentynent Europa
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
