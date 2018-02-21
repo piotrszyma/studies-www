@@ -1,0 +1,32 @@
+* {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+}
+
+[class^=col-] {
+  margin: 0 1%;
+}
+
+[class^=col-]:first-child {
+  margin-left: 0;
+}
+
+[class^=col-]:last-child {
+  margin-right: 0;
+}
+
+.col-1 {
+  flex: 1;
+}
+
+.col-2 {
+  flex: 2;
+}
