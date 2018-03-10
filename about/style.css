@@ -122,6 +122,14 @@ li {
   padding: 0.5rem;
 }
 
+.filled .footer {
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  color: var(--color1);
+  background-color: var(--color3);
+  padding: 0.5rem;
+}
+
 .filled .content {
   border-width: 0 2px 2px 2px;
   border-color:  var(--color4);
