@@ -1,5 +1,5 @@
 <?php
-  require_once('./pages/router.php');
+  require_once('./router.php');
 
   $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2);
   $page = getPageOrRedirect($request_uri[0]);
