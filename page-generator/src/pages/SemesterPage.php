@@ -32,7 +32,7 @@ HEADER;
       foreach ($subjects as $subject) {
         $name = $subject['name'];
         $questions = $subject['questions'];
-        $knowledge_html = array_reduce($subject['knowledge'], function($prev, $curr) {
+        $knowledge_html = array_reduce($subject['knowledge'], function ($prev, $curr) {
           return $prev . '<li>' . $curr . '</li>';
         }, '');
 
@@ -82,28 +82,15 @@ HEADER;
       $page->setHeader('Piotr Szyma', 'Student Informatyki WPPT', $semester_data['about']);
       $page->setSubjects($semester_data['subjects']);
 
-
       return $page;
     }
 
-    public function getBody()
+    public function getBodyContent()
     {
-      return <<<HTML
-<body>
-    <div class="container">
+      return <<<BODY
         $this->header
         $this->subjects
-      <div class="row">
-        <div class="col-1 back">
-          <div class="button">
-            <a href="/">
-              Powrót
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-</body>
-HTML;
+BODY;
+
     }
   }

@@ -1,7 +1,7 @@
 <?php
   require_once('PageInterface.php');
 
-  class BasePage
+  abstract class BasePage
   {
     private $head;
 
@@ -20,5 +20,32 @@
     public function getHead()
     {
       return $this->head;
+    }
+
+    public function getBodyContent()
+    {
+      throw new Exception("Not implemented yet");
+    }
+
+    public function getBody()
+    {
+      $content = $this->getBodyContent();
+
+      return <<<HTML
+<body>
+    <div class="container">
+        $content
+      <div class="row">
+        <div class="col-1 back">
+            <div class="button">
+              <a href="/">
+                <span>Powrót</span>
+              </a>
+            </div>
+        </div>
+      </div>
+    </div>
+</body>
+HTML;
     }
   }

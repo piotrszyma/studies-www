@@ -102,7 +102,7 @@ HTML;
 
       $studies = array_map(function ($element) {
         return [
-          'name' => $element . ' semestr',
+          'name' => $element . '  semestr',
           'url' => 'terms/' . $element . '-semester'
         ];
       }, [1, 2, 3, 4, 5]);

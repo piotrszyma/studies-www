@@ -10,6 +10,9 @@
       return SemesterPage::createInstance($url);
     } else if($url === '/interests/html') {
       return HobbyPage::createInstance($url);
+    } else if($url === '/game/snake') {
+      include('./assets/game/snake.html');
+      die();
     } else {
       header("Location: /");
       die();
