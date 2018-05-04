@@ -78,7 +78,7 @@ HEADER;
       $semester_data = MockSemesters::getSemesterDataById($matched['semesterId']);
 
       $page = new SemesterPage($matched['semesterId']);
-      $page->setHead($matched['semesterId'] . 'semester');
+      $page->setHead($matched['semesterId'] . ' semester');
       $page->setHeader('Piotr Szyma', 'Student Informatyki WPPT', $semester_data['about']);
       $page->setSubjects($semester_data['subjects']);
 

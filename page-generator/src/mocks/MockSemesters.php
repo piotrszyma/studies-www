@@ -50,69 +50,48 @@
           'about' => 'Studia: Semester 2 2016',
           'subjects' => [
             [
-              'name' => 'Analiza matematyczna 1',
+              'name' => 'Fizyka',
               'knowledge' => [
-                'Jak obsługiwać program Wolfram Alpha?',
-                'Jak obliczyć całkę',
-                'Poznałem osobę Krystiana Karczyńskiego'
+                'Podstawy fizyki klasycznej'
               ],
-              'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni,
-                              rozwiązać parę całek - 
-                              w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
+              'questions' => 'Wciąż wiele założeń fizyki klasycznej jest dla mnie nieintuicyjnych'
             ],
             [
-              'name' => 'Logika i struktury formalne',
+              'name' => 'Kurs programowania',
               'knowledge' => [
-                'Poznałem wiele ciekawych zwrotów (spróbujmy to przeżyć, nie kupuję tego)',
-                'Poznałem język matematyczny'
+                'Programowanie zorientowane obiektowo',
+                'Praktyczna wiedza'
               ],
-              'questions' => 'Rozwiązywać dużo problemów, żeby zbudować sprawność matematyczną.'
+              'questions' => 'Klasa abstrakcyjna czy interfejs - oto jest pytanie'
             ],
             [
-              'name' => 'Algebra z geometrią analityczną',
+              'name' => 'Problemy prawne informatyków',
               'knowledge' => [
-                'Zarys RSA',
-                'Kompresja obrazów',
-                'Liczby zespolone',
-                'Macierze',
-                'Ciała, grupy, pierścienie',
+                'Ogólna wiedza dotycząca problemów prawnych związanych z prowadzeniem działalności jako informatyk'
               ],
-              'questions' => 'Szczegóły i rozumienie poznanych matematycznych bytów.'
-            ],
+              'questions' => 'Praktyczne zastosowanie'
+            ]
           ]
         ],
         3 => [
           'about' => 'Studia: Semester 3 2016/2017',
           'subjects' => [
             [
-              'name' => 'Analiza matematyczna 1',
+              'name' => 'Bazy danych',
               'knowledge' => [
-                'Jak obsługiwać program Wolfram Alpha?',
-                'Jak obliczyć całkę',
-                'Poznałem osobę Krystiana Karczyńskiego'
+                'Algebra relacji',
+                'Normalizacja bazy danych'
               ],
-              'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni,
-                              rozwiązać parę całek - 
-                              w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
+              'questions' => 'Zaawansowane agregacje'
             ],
             [
-              'name' => 'Logika i struktury formalne',
+              'name' => 'Technologie programowania',
               'knowledge' => [
-                'Poznałem wiele ciekawych zwrotów (spróbujmy to przeżyć, nie kupuję tego)',
-                'Poznałem język matematyczny'
+                'Wzorce projektowania',
+                'Projektowanie architektury',
+                'Diagramy UML'
               ],
-              'questions' => 'Rozwiązywać dużo problemów, żeby zbudować sprawność matematyczną.'
-            ],
-            [
-              'name' => 'Algebra z geometrią analityczną',
-              'knowledge' => [
-                'Zarys RSA',
-                'Kompresja obrazów',
-                'Liczby zespolone',
-                'Macierze',
-                'Ciała, grupy, pierścienie',
-              ],
-              'questions' => 'Szczegóły i rozumienie poznanych matematycznych bytów.'
+              'questions' => 'Praktyczne zastosowanie wzorców'
             ],
           ]
         ],
@@ -120,70 +99,48 @@
           'about' => 'Studia: Semester 4 2017',
           'subjects' => [
             [
-              'name' => 'Analiza matematyczna 1',
+              'name' => 'Języki i paradygmaty programowania',
               'knowledge' => [
-                'Jak obsługiwać program Wolfram Alpha?',
-                'Jak obliczyć całkę',
-                'Poznałem osobę Krystiana Karczyńskiego'
+                'Programowanie funkcyjne',
+                'High order functions'
               ],
-              'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni,
-                              rozwiązać parę całek - 
-                              w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
+              'questions' => 'Prolog wydaje mi się nieintuicyjny, muszę go jeszcze podszkolić'
             ],
             [
-              'name' => 'Logika i struktury formalne',
+              'name' => 'Algorytmy i struktury danych',
               'knowledge' => [
-                'Poznałem wiele ciekawych zwrotów (spróbujmy to przeżyć, nie kupuję tego)',
-                'Poznałem język matematyczny'
+                'Poznałem wiele przydatnych struktur'
               ],
-              'questions' => 'Rozwiązywać dużo problemów, żeby zbudować sprawność matematyczną.'
-            ],
-            [
-              'name' => 'Algebra z geometrią analityczną',
-              'knowledge' => [
-                'Zarys RSA',
-                'Kompresja obrazów',
-                'Liczby zespolone',
-                'Macierze',
-                'Ciała, grupy, pierścienie',
-              ],
-              'questions' => 'Szczegóły i rozumienie poznanych matematycznych bytów.'
-            ],
+              'questions' => 'Programowanie dynamiczne.'
+            ]
           ]
         ],
         5 => [
           'about' => 'Studia: Semester 5 2017/2018',
           'subjects' => [
             [
-              'name' => 'Analiza matematyczna 1',
+              'name' => 'Języki formalne',
               'knowledge' => [
-                'Jak obsługiwać program Wolfram Alpha?',
-                'Jak obliczyć całkę',
-                'Poznałem osobę Krystiana Karczyńskiego'
+                'Jak działa kompilator?',
+                'Jak stworzyć kompilator',
+                'Jak działają wyrażenia regularne'
               ],
-              'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni,
-                              rozwiązać parę całek - 
-                              w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
+              'questions' => 'Czy da się wyrobić większą intuicję?'
             ],
             [
-              'name' => 'Logika i struktury formalne',
+              'name' => 'Kryptografia',
               'knowledge' => [
-                'Poznałem wiele ciekawych zwrotów (spróbujmy to przeżyć, nie kupuję tego)',
-                'Poznałem język matematyczny'
+                'Poznałem, jakie matematyczne konstrukcje pozwalają na bezpieczne przesyłanie danych'
               ],
-              'questions' => 'Rozwiązywać dużo problemów, żeby zbudować sprawność matematyczną.'
+              'questions' => 'Wiem, że dużo jeszcze przede mną.'
             ],
             [
-              'name' => 'Algebra z geometrią analityczną',
+              'name' => 'Obliczenia naukowe',
               'knowledge' => [
-                'Zarys RSA',
-                'Kompresja obrazów',
-                'Liczby zespolone',
-                'Macierze',
-                'Ciała, grupy, pierścienie',
+                'Dowiedziałem się, jak trudną do okiełznania rzeczą jest arytmetyka zmiennoprzecinkowa, ale i jak sobie z nią radzić'
               ],
-              'questions' => 'Szczegóły i rozumienie poznanych matematycznych bytów.'
-            ],
+              'questions' => 'Czy w życiu będę kiedyś tworzył bibliotekę do obliczeń naukowych?'
+            ]
           ]
         ]
       );
