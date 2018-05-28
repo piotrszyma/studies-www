@@ -1,0 +1,18 @@
+propel:
+  database:
+      connections:
+          portfolio:
+              adapter: pgsql
+              classname: Propel\Runtime\Connection\ConnectionWrapper
+              dsn: pgsql:host=db;dbname=postgres
+              user: postgres 
+              password: postgres 
+              attributes:
+  runtime:
+      defaultConnection: portfolio
+      connections:
+          - portfolio
+  generator:
+      defaultConnection: portfolio
+      connections:
+          - portfolio
