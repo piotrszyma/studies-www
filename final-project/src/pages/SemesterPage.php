@@ -32,6 +32,7 @@ HEADER;
 
       foreach ($subjects as $subject) {
         $name = $subject['name'];
+        $id = $subject['id'];
         $questions = $subject['questions'];
         $knowledge_html = array_reduce($subject['knowledge'], function ($prev, $curr) {
           return $prev . '<li>' . $curr . '</li>';
@@ -41,10 +42,14 @@ HEADER;
           '
               <div class="row">
       <div class="col-1 title">
-        ' . $name . '
-      </div>
-      <div class="col-1">
-        Opinie
+        <span class="name">' . $name . '</span>
+        <span>
+          <a href="course/' . $id .'">
+            <button class="button button--opinion">
+              Sprawdź opinie
+            </button>
+          </a>
+        </span>
       </div>
     </div>
     <div class="row">

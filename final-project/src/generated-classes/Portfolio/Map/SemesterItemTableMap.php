@@ -166,6 +166,13 @@ class SemesterItemTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, null, false);
+        $this->addRelation('Opinion', '\\Portfolio\\Opinion', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':semester_item_id',
+    1 => ':id',
+  ),
+), null, null, 'Opinions', false);
     } // buildRelations()
 
     /**

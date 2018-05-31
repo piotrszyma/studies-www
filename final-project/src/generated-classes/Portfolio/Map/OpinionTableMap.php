@@ -59,7 +59,7 @@ class OpinionTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,12 +69,17 @@ class OpinionTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
      */
     const COL_ID = 'opinion.id';
+
+    /**
+     * the column name for the semester_item_id field
+     */
+    const COL_SEMESTER_ITEM_ID = 'opinion.semester_item_id';
 
     /**
      * the column name for the author field
@@ -85,6 +90,11 @@ class OpinionTableMap extends TableMap
      * the column name for the comment field
      */
     const COL_COMMENT = 'opinion.comment';
+
+    /**
+     * the column name for the created field
+     */
+    const COL_CREATED = 'opinion.created';
 
     /**
      * The default string format for model objects of the related table
@@ -98,11 +108,11 @@ class OpinionTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Author', 'Comment', ),
-        self::TYPE_CAMELNAME     => array('id', 'author', 'comment', ),
-        self::TYPE_COLNAME       => array(OpinionTableMap::COL_ID, OpinionTableMap::COL_AUTHOR, OpinionTableMap::COL_COMMENT, ),
-        self::TYPE_FIELDNAME     => array('id', 'author', 'comment', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'SemesterItemId', 'Author', 'Comment', 'Created', ),
+        self::TYPE_CAMELNAME     => array('id', 'semesterItemId', 'author', 'comment', 'created', ),
+        self::TYPE_COLNAME       => array(OpinionTableMap::COL_ID, OpinionTableMap::COL_SEMESTER_ITEM_ID, OpinionTableMap::COL_AUTHOR, OpinionTableMap::COL_COMMENT, OpinionTableMap::COL_CREATED, ),
+        self::TYPE_FIELDNAME     => array('id', 'semester_item_id', 'author', 'comment', 'created', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -112,11 +122,11 @@ class OpinionTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Author' => 1, 'Comment' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'author' => 1, 'comment' => 2, ),
-        self::TYPE_COLNAME       => array(OpinionTableMap::COL_ID => 0, OpinionTableMap::COL_AUTHOR => 1, OpinionTableMap::COL_COMMENT => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'author' => 1, 'comment' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'SemesterItemId' => 1, 'Author' => 2, 'Comment' => 3, 'Created' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'semesterItemId' => 1, 'author' => 2, 'comment' => 3, 'created' => 4, ),
+        self::TYPE_COLNAME       => array(OpinionTableMap::COL_ID => 0, OpinionTableMap::COL_SEMESTER_ITEM_ID => 1, OpinionTableMap::COL_AUTHOR => 2, OpinionTableMap::COL_COMMENT => 3, OpinionTableMap::COL_CREATED => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'semester_item_id' => 1, 'author' => 2, 'comment' => 3, 'created' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -138,8 +148,10 @@ class OpinionTableMap extends TableMap
         $this->setPrimaryKeyMethodInfo('opinion_id_seq');
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addForeignKey('semester_item_id', 'SemesterItemId', 'INTEGER', 'semester_item', 'id', false, null, null);
         $this->addColumn('author', 'Author', 'VARCHAR', true, 256, null);
         $this->addColumn('comment', 'Comment', 'VARCHAR', true, 1024, null);
+        $this->addColumn('created', 'Created', 'TIMESTAMP', true, null, null);
     } // initialize()
 
     /**
@@ -147,6 +159,13 @@ class OpinionTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('SemesterItem', '\\Portfolio\\SemesterItem', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':semester_item_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -291,12 +310,16 @@ class OpinionTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(OpinionTableMap::COL_ID);
+            $criteria->addSelectColumn(OpinionTableMap::COL_SEMESTER_ITEM_ID);
             $criteria->addSelectColumn(OpinionTableMap::COL_AUTHOR);
             $criteria->addSelectColumn(OpinionTableMap::COL_COMMENT);
+            $criteria->addSelectColumn(OpinionTableMap::COL_CREATED);
         } else {
             $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.semester_item_id');
             $criteria->addSelectColumn($alias . '.author');
             $criteria->addSelectColumn($alias . '.comment');
+            $criteria->addSelectColumn($alias . '.created');
         }
     }
 

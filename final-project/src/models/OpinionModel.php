@@ -1,11 +1,11 @@
 <?php
 
-use Portfolio\SemesterQuery;
+use Portfolio\OpinionQuery;
 use Portfolio\SemesterItemQuery;
 
-class SemesterModel {
+class CourseModel {
   public static function create() {
-    return new SemesterModel();
+    return new CourseModel();
   }
 
   private function parseIterable($iterable) {
@@ -16,19 +16,12 @@ class SemesterModel {
     }
     return $iterable;
   }
-  public function getByNumber($number) {
-    $semester = SemesterQuery::create()
-      ->filterByNumber($number)
-      ->findOne();
-
-    $semesterItems = SemesterItemQuery::create()
-      ->filterBySemester($semester)
-      ->orderById()
-      ->find();
-
+  public function getById($id) {
+    var_dump($id);
+    $course = OpinionQuery::create();
     $parsedItems = [];
     
-    foreach ($semesterItems as $s) {
+    foreach ($courseItems as $s) {
       $parsedItem = array(
         'name' => $s->getName(),
         'knowledge' => $this->parseIterable($s->getKnowledge()),
@@ -39,12 +32,12 @@ class SemesterModel {
     }
 
 
-    $semesterData = [
-      'about' => $semester->getAbout(),
+    $courseData = [
+      'about' => $course->getAbout(),
       'subjects' => $parsedItems
     ];
 
-    return $semesterData;
+    return $courseData;
   } 
 }
 

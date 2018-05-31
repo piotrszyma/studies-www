@@ -1,0 +1,14 @@
+.opinion {
+  font-weight: 700;
+  padding-top: 1rem; }
+
+.button--opinion {
+  font-size: 0.75rem;
+  width: 180px;
+  margin: 0 0 0 1rem; }
+
+.title {
+  flex-direction: row; }
+  .title .name {
+    line-height: 2rem;
+    font-size: 1rem; }

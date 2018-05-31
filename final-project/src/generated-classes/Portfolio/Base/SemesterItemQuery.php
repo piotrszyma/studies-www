@@ -50,7 +50,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSemesterItemQuery rightJoinWithSemester() Adds a RIGHT JOIN clause and with to the query using the Semester relation
  * @method     ChildSemesterItemQuery innerJoinWithSemester() Adds a INNER JOIN clause and with to the query using the Semester relation
  *
- * @method     \Portfolio\SemesterQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildSemesterItemQuery leftJoinOpinion($relationAlias = null) Adds a LEFT JOIN clause to the query using the Opinion relation
+ * @method     ChildSemesterItemQuery rightJoinOpinion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Opinion relation
+ * @method     ChildSemesterItemQuery innerJoinOpinion($relationAlias = null) Adds a INNER JOIN clause to the query using the Opinion relation
+ *
+ * @method     ChildSemesterItemQuery joinWithOpinion($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Opinion relation
+ *
+ * @method     ChildSemesterItemQuery leftJoinWithOpinion() Adds a LEFT JOIN clause and with to the query using the Opinion relation
+ * @method     ChildSemesterItemQuery rightJoinWithOpinion() Adds a RIGHT JOIN clause and with to the query using the Opinion relation
+ * @method     ChildSemesterItemQuery innerJoinWithOpinion() Adds a INNER JOIN clause and with to the query using the Opinion relation
+ *
+ * @method     \Portfolio\SemesterQuery|\Portfolio\OpinionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildSemesterItem findOne(ConnectionInterface $con = null) Return the first ChildSemesterItem matching the query
  * @method     ChildSemesterItem findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSemesterItem matching the query, or a new ChildSemesterItem object populated from the query conditions when no match is found
@@ -498,6 +508,79 @@ abstract class SemesterItemQuery extends ModelCriteria
         return $this
             ->joinSemester($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Semester', '\Portfolio\SemesterQuery');
+    }
+
+    /**
+     * Filter the query by a related \Portfolio\Opinion object
+     *
+     * @param \Portfolio\Opinion|ObjectCollection $opinion the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildSemesterItemQuery The current query, for fluid interface
+     */
+    public function filterByOpinion($opinion, $comparison = null)
+    {
+        if ($opinion instanceof \Portfolio\Opinion) {
+            return $this
+                ->addUsingAlias(SemesterItemTableMap::COL_ID, $opinion->getSemesterItemId(), $comparison);
+        } elseif ($opinion instanceof ObjectCollection) {
+            return $this
+                ->useOpinionQuery()
+                ->filterByPrimaryKeys($opinion->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByOpinion() only accepts arguments of type \Portfolio\Opinion or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Opinion relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildSemesterItemQuery The current query, for fluid interface
+     */
+    public function joinOpinion($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Opinion');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Opinion');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Opinion relation Opinion object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \Portfolio\OpinionQuery A secondary query class using the current class as primary query
+     */
+    public function useOpinionQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinOpinion($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Opinion', '\Portfolio\OpinionQuery');
     }
 
     /**

@@ -2,9 +2,12 @@
 
 namespace Portfolio\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Portfolio\OpinionQuery as ChildOpinionQuery;
+use Portfolio\SemesterItem as ChildSemesterItem;
+use Portfolio\SemesterItemQuery as ChildSemesterItemQuery;
 use Portfolio\Map\OpinionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -17,6 +20,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'opinion' table.
@@ -67,6 +71,13 @@ abstract class Opinion implements ActiveRecordInterface
     protected $id;
 
     /**
+     * The value for the semester_item_id field.
+     *
+     * @var        int
+     */
+    protected $semester_item_id;
+
+    /**
      * The value for the author field.
      *
      * @var        string
@@ -79,6 +90,18 @@ abstract class Opinion implements ActiveRecordInterface
      * @var        string
      */
     protected $comment;
+
+    /**
+     * The value for the created field.
+     *
+     * @var        DateTime
+     */
+    protected $created;
+
+    /**
+     * @var        ChildSemesterItem
+     */
+    protected $aSemesterItem;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -324,6 +347,16 @@ abstract class Opinion implements ActiveRecordInterface
     }
 
     /**
+     * Get the [semester_item_id] column value.
+     *
+     * @return int
+     */
+    public function getSemesterItemId()
+    {
+        return $this->semester_item_id;
+    }
+
+    /**
      * Get the [author] column value.
      *
      * @return string
@@ -341,6 +374,26 @@ abstract class Opinion implements ActiveRecordInterface
     public function getComment()
     {
         return $this->comment;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created;
+        } else {
+            return $this->created instanceof \DateTimeInterface ? $this->created->format($format) : null;
+        }
     }
 
     /**
@@ -362,6 +415,30 @@ abstract class Opinion implements ActiveRecordInterface
 
         return $this;
     } // setId()
+
+    /**
+     * Set the value of [semester_item_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Portfolio\Opinion The current object (for fluent API support)
+     */
+    public function setSemesterItemId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->semester_item_id !== $v) {
+            $this->semester_item_id = $v;
+            $this->modifiedColumns[OpinionTableMap::COL_SEMESTER_ITEM_ID] = true;
+        }
+
+        if ($this->aSemesterItem !== null && $this->aSemesterItem->getId() !== $v) {
+            $this->aSemesterItem = null;
+        }
+
+        return $this;
+    } // setSemesterItemId()
 
     /**
      * Set the value of [author] column.
@@ -404,6 +481,26 @@ abstract class Opinion implements ActiveRecordInterface
     } // setComment()
 
     /**
+     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Portfolio\Opinion The current object (for fluent API support)
+     */
+    public function setCreated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created !== null || $dt !== null) {
+            if ($this->created === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created->format("Y-m-d H:i:s.u")) {
+                $this->created = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[OpinionTableMap::COL_CREATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreated()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -442,11 +539,17 @@ abstract class Opinion implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : OpinionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OpinionTableMap::translateFieldName('Author', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OpinionTableMap::translateFieldName('SemesterItemId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->semester_item_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OpinionTableMap::translateFieldName('Author', TableMap::TYPE_PHPNAME, $indexType)];
             $this->author = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OpinionTableMap::translateFieldName('Comment', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OpinionTableMap::translateFieldName('Comment', TableMap::TYPE_PHPNAME, $indexType)];
             $this->comment = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : OpinionTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -455,7 +558,7 @@ abstract class Opinion implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = OpinionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = OpinionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Portfolio\\Opinion'), 0, $e);
@@ -477,6 +580,9 @@ abstract class Opinion implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aSemesterItem !== null && $this->semester_item_id !== $this->aSemesterItem->getId()) {
+            $this->aSemesterItem = null;
+        }
     } // ensureConsistency
 
     /**
@@ -516,6 +622,7 @@ abstract class Opinion implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aSemesterItem = null;
         } // if (deep)
     }
 
@@ -619,6 +726,18 @@ abstract class Opinion implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aSemesterItem !== null) {
+                if ($this->aSemesterItem->isModified() || $this->aSemesterItem->isNew()) {
+                    $affectedRows += $this->aSemesterItem->save($con);
+                }
+                $this->setSemesterItem($this->aSemesterItem);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -668,11 +787,17 @@ abstract class Opinion implements ActiveRecordInterface
         if ($this->isColumnModified(OpinionTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
+        if ($this->isColumnModified(OpinionTableMap::COL_SEMESTER_ITEM_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'semester_item_id';
+        }
         if ($this->isColumnModified(OpinionTableMap::COL_AUTHOR)) {
             $modifiedColumns[':p' . $index++]  = 'author';
         }
         if ($this->isColumnModified(OpinionTableMap::COL_COMMENT)) {
             $modifiedColumns[':p' . $index++]  = 'comment';
+        }
+        if ($this->isColumnModified(OpinionTableMap::COL_CREATED)) {
+            $modifiedColumns[':p' . $index++]  = 'created';
         }
 
         $sql = sprintf(
@@ -688,11 +813,17 @@ abstract class Opinion implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
+                    case 'semester_item_id':
+                        $stmt->bindValue($identifier, $this->semester_item_id, PDO::PARAM_INT);
+                        break;
                     case 'author':
                         $stmt->bindValue($identifier, $this->author, PDO::PARAM_STR);
                         break;
                     case 'comment':
                         $stmt->bindValue($identifier, $this->comment, PDO::PARAM_STR);
+                        break;
+                    case 'created':
+                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -753,10 +884,16 @@ abstract class Opinion implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getAuthor();
+                return $this->getSemesterItemId();
                 break;
             case 2:
+                return $this->getAuthor();
+                break;
+            case 3:
                 return $this->getComment();
+                break;
+            case 4:
+                return $this->getCreated();
                 break;
             default:
                 return null;
@@ -775,10 +912,11 @@ abstract class Opinion implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['Opinion'][$this->hashCode()])) {
@@ -788,14 +926,37 @@ abstract class Opinion implements ActiveRecordInterface
         $keys = OpinionTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getAuthor(),
-            $keys[2] => $this->getComment(),
+            $keys[1] => $this->getSemesterItemId(),
+            $keys[2] => $this->getAuthor(),
+            $keys[3] => $this->getComment(),
+            $keys[4] => $this->getCreated(),
         );
+        if ($result[$keys[4]] instanceof \DateTimeInterface) {
+            $result[$keys[4]] = $result[$keys[4]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aSemesterItem) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'semesterItem';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'semester_item';
+                        break;
+                    default:
+                        $key = 'SemesterItem';
+                }
+
+                $result[$key] = $this->aSemesterItem->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -833,10 +994,16 @@ abstract class Opinion implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setAuthor($value);
+                $this->setSemesterItemId($value);
                 break;
             case 2:
+                $this->setAuthor($value);
+                break;
+            case 3:
                 $this->setComment($value);
+                break;
+            case 4:
+                $this->setCreated($value);
                 break;
         } // switch()
 
@@ -868,10 +1035,16 @@ abstract class Opinion implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setAuthor($arr[$keys[1]]);
+            $this->setSemesterItemId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setComment($arr[$keys[2]]);
+            $this->setAuthor($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setComment($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setCreated($arr[$keys[4]]);
         }
     }
 
@@ -917,11 +1090,17 @@ abstract class Opinion implements ActiveRecordInterface
         if ($this->isColumnModified(OpinionTableMap::COL_ID)) {
             $criteria->add(OpinionTableMap::COL_ID, $this->id);
         }
+        if ($this->isColumnModified(OpinionTableMap::COL_SEMESTER_ITEM_ID)) {
+            $criteria->add(OpinionTableMap::COL_SEMESTER_ITEM_ID, $this->semester_item_id);
+        }
         if ($this->isColumnModified(OpinionTableMap::COL_AUTHOR)) {
             $criteria->add(OpinionTableMap::COL_AUTHOR, $this->author);
         }
         if ($this->isColumnModified(OpinionTableMap::COL_COMMENT)) {
             $criteria->add(OpinionTableMap::COL_COMMENT, $this->comment);
+        }
+        if ($this->isColumnModified(OpinionTableMap::COL_CREATED)) {
+            $criteria->add(OpinionTableMap::COL_CREATED, $this->created);
         }
 
         return $criteria;
@@ -1009,8 +1188,10 @@ abstract class Opinion implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setSemesterItemId($this->getSemesterItemId());
         $copyObj->setAuthor($this->getAuthor());
         $copyObj->setComment($this->getComment());
+        $copyObj->setCreated($this->getCreated());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1040,15 +1221,71 @@ abstract class Opinion implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildSemesterItem object.
+     *
+     * @param  ChildSemesterItem $v
+     * @return $this|\Portfolio\Opinion The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setSemesterItem(ChildSemesterItem $v = null)
+    {
+        if ($v === null) {
+            $this->setSemesterItemId(NULL);
+        } else {
+            $this->setSemesterItemId($v->getId());
+        }
+
+        $this->aSemesterItem = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildSemesterItem object, it will not be re-added.
+        if ($v !== null) {
+            $v->addOpinion($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildSemesterItem object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildSemesterItem The associated ChildSemesterItem object.
+     * @throws PropelException
+     */
+    public function getSemesterItem(ConnectionInterface $con = null)
+    {
+        if ($this->aSemesterItem === null && ($this->semester_item_id != 0)) {
+            $this->aSemesterItem = ChildSemesterItemQuery::create()->findPk($this->semester_item_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aSemesterItem->addOpinions($this);
+             */
+        }
+
+        return $this->aSemesterItem;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aSemesterItem) {
+            $this->aSemesterItem->removeOpinion($this);
+        }
         $this->id = null;
+        $this->semester_item_id = null;
         $this->author = null;
         $this->comment = null;
+        $this->created = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1069,6 +1306,7 @@ abstract class Opinion implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aSemesterItem = null;
     }
 
     /**

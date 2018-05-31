@@ -41,8 +41,14 @@
 
  <table name="opinion" phpName="Opinion">
    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+   <column name="semester_item_id" type="integer"/>
    <column name="author" type="varchar" size="256" required="true" />
    <column name="comment" type="varchar" size="1024" required="true" />
+   <column name="created" type="timestamp" required="true" />
+
+   <foreign-key foreignTable="semester_item">
+     <reference local="semester_item_id" foreign="id"/>
+   </foreign-key>
  </table>
 
 </database>

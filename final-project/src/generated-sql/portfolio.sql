@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS "semester" CASCADE;
 CREATE TABLE "semester"
 (
     "id" serial NOT NULL,
+    "number" INTEGER NOT NULL,
     "about" VARCHAR(4096) NOT NULL,
     PRIMARY KEY ("id")
 );
@@ -70,8 +71,10 @@ DROP TABLE IF EXISTS "opinion" CASCADE;
 CREATE TABLE "opinion"
 (
     "id" serial NOT NULL,
+    "semester_item_id" INTEGER,
     "author" VARCHAR(256) NOT NULL,
     "comment" VARCHAR(1024) NOT NULL,
+    "created" TIMESTAMP NOT NULL,
     PRIMARY KEY ("id")
 );
 
@@ -82,5 +85,9 @@ ALTER TABLE "hobby_item" ADD CONSTRAINT "hobby_item_fk_fd3442"
 ALTER TABLE "semester_item" ADD CONSTRAINT "semester_item_fk_d756b7"
     FOREIGN KEY ("semester_id")
     REFERENCES "semester" ("id");
+
+ALTER TABLE "opinion" ADD CONSTRAINT "opinion_fk_6bd859"
+    FOREIGN KEY ("semester_item_id")
+    REFERENCES "semester_item" ("id");
 
 COMMIT;

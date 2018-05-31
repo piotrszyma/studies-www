@@ -4,15 +4,20 @@ namespace Portfolio\Base;
 
 use \Exception;
 use \PDO;
+use Portfolio\Opinion as ChildOpinion;
+use Portfolio\OpinionQuery as ChildOpinionQuery;
 use Portfolio\Semester as ChildSemester;
+use Portfolio\SemesterItem as ChildSemesterItem;
 use Portfolio\SemesterItemQuery as ChildSemesterItemQuery;
 use Portfolio\SemesterQuery as ChildSemesterQuery;
+use Portfolio\Map\OpinionTableMap;
 use Portfolio\Map\SemesterItemTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -102,12 +107,24 @@ abstract class SemesterItem implements ActiveRecordInterface
     protected $aSemester;
 
     /**
+     * @var        ObjectCollection|ChildOpinion[] Collection to store aggregation of ChildOpinion objects.
+     */
+    protected $collOpinions;
+    protected $collOpinionsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildOpinion[]
+     */
+    protected $opinionsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Portfolio\Base\SemesterItem object.
@@ -611,6 +628,8 @@ abstract class SemesterItem implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aSemester = null;
+            $this->collOpinions = null;
+
         } // if (deep)
     }
 
@@ -735,6 +754,24 @@ abstract class SemesterItem implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->opinionsScheduledForDeletion !== null) {
+                if (!$this->opinionsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->opinionsScheduledForDeletion as $opinion) {
+                        // need to save related object because we set the relation to null
+                        $opinion->save($con);
+                    }
+                    $this->opinionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collOpinions !== null) {
+                foreach ($this->collOpinions as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -939,6 +976,21 @@ abstract class SemesterItem implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aSemester->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collOpinions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'opinions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'opinions';
+                        break;
+                    default:
+                        $key = 'Opinions';
+                }
+
+                $result[$key] = $this->collOpinions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1176,6 +1228,20 @@ abstract class SemesterItem implements ActiveRecordInterface
         $copyObj->setName($this->getName());
         $copyObj->setQuestions($this->getQuestions());
         $copyObj->setKnowledge($this->getKnowledge());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getOpinions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addOpinion($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1255,6 +1321,248 @@ abstract class SemesterItem implements ActiveRecordInterface
         return $this->aSemester;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('Opinion' == $relationName) {
+            $this->initOpinions();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collOpinions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addOpinions()
+     */
+    public function clearOpinions()
+    {
+        $this->collOpinions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collOpinions collection loaded partially.
+     */
+    public function resetPartialOpinions($v = true)
+    {
+        $this->collOpinionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collOpinions collection.
+     *
+     * By default this just sets the collOpinions collection to an empty array (like clearcollOpinions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initOpinions($overrideExisting = true)
+    {
+        if (null !== $this->collOpinions && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = OpinionTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collOpinions = new $collectionClassName;
+        $this->collOpinions->setModel('\Portfolio\Opinion');
+    }
+
+    /**
+     * Gets an array of ChildOpinion objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildSemesterItem is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildOpinion[] List of ChildOpinion objects
+     * @throws PropelException
+     */
+    public function getOpinions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collOpinionsPartial && !$this->isNew();
+        if (null === $this->collOpinions || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collOpinions) {
+                // return empty collection
+                $this->initOpinions();
+            } else {
+                $collOpinions = ChildOpinionQuery::create(null, $criteria)
+                    ->filterBySemesterItem($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collOpinionsPartial && count($collOpinions)) {
+                        $this->initOpinions(false);
+
+                        foreach ($collOpinions as $obj) {
+                            if (false == $this->collOpinions->contains($obj)) {
+                                $this->collOpinions->append($obj);
+                            }
+                        }
+
+                        $this->collOpinionsPartial = true;
+                    }
+
+                    return $collOpinions;
+                }
+
+                if ($partial && $this->collOpinions) {
+                    foreach ($this->collOpinions as $obj) {
+                        if ($obj->isNew()) {
+                            $collOpinions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collOpinions = $collOpinions;
+                $this->collOpinionsPartial = false;
+            }
+        }
+
+        return $this->collOpinions;
+    }
+
+    /**
+     * Sets a collection of ChildOpinion objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $opinions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildSemesterItem The current object (for fluent API support)
+     */
+    public function setOpinions(Collection $opinions, ConnectionInterface $con = null)
+    {
+        /** @var ChildOpinion[] $opinionsToDelete */
+        $opinionsToDelete = $this->getOpinions(new Criteria(), $con)->diff($opinions);
+
+
+        $this->opinionsScheduledForDeletion = $opinionsToDelete;
+
+        foreach ($opinionsToDelete as $opinionRemoved) {
+            $opinionRemoved->setSemesterItem(null);
+        }
+
+        $this->collOpinions = null;
+        foreach ($opinions as $opinion) {
+            $this->addOpinion($opinion);
+        }
+
+        $this->collOpinions = $opinions;
+        $this->collOpinionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Opinion objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Opinion objects.
+     * @throws PropelException
+     */
+    public function countOpinions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collOpinionsPartial && !$this->isNew();
+        if (null === $this->collOpinions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collOpinions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getOpinions());
+            }
+
+            $query = ChildOpinionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterBySemesterItem($this)
+                ->count($con);
+        }
+
+        return count($this->collOpinions);
+    }
+
+    /**
+     * Method called to associate a ChildOpinion object to this object
+     * through the ChildOpinion foreign key attribute.
+     *
+     * @param  ChildOpinion $l ChildOpinion
+     * @return $this|\Portfolio\SemesterItem The current object (for fluent API support)
+     */
+    public function addOpinion(ChildOpinion $l)
+    {
+        if ($this->collOpinions === null) {
+            $this->initOpinions();
+            $this->collOpinionsPartial = true;
+        }
+
+        if (!$this->collOpinions->contains($l)) {
+            $this->doAddOpinion($l);
+
+            if ($this->opinionsScheduledForDeletion and $this->opinionsScheduledForDeletion->contains($l)) {
+                $this->opinionsScheduledForDeletion->remove($this->opinionsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildOpinion $opinion The ChildOpinion object to add.
+     */
+    protected function doAddOpinion(ChildOpinion $opinion)
+    {
+        $this->collOpinions[]= $opinion;
+        $opinion->setSemesterItem($this);
+    }
+
+    /**
+     * @param  ChildOpinion $opinion The ChildOpinion object to remove.
+     * @return $this|ChildSemesterItem The current object (for fluent API support)
+     */
+    public function removeOpinion(ChildOpinion $opinion)
+    {
+        if ($this->getOpinions()->contains($opinion)) {
+            $pos = $this->collOpinions->search($opinion);
+            $this->collOpinions->remove($pos);
+            if (null === $this->opinionsScheduledForDeletion) {
+                $this->opinionsScheduledForDeletion = clone $this->collOpinions;
+                $this->opinionsScheduledForDeletion->clear();
+            }
+            $this->opinionsScheduledForDeletion[]= $opinion;
+            $opinion->setSemesterItem(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1288,8 +1596,14 @@ abstract class SemesterItem implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collOpinions) {
+                foreach ($this->collOpinions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collOpinions = null;
         $this->aSemester = null;
     }
 
