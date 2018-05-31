@@ -1,5 +1,6 @@
 <?php
   require_once(__DIR__ . '/../mocks/MockSemesters.php');
+  require_once(__DIR__ . '/../models/SemesterModel.php');
 
   class SemesterPage extends BasePage implements PageInterface
   {
@@ -42,6 +43,9 @@ HEADER;
       <div class="col-1 title">
         ' . $name . '
       </div>
+      <div class="col-1">
+        Opinie
+      </div>
     </div>
     <div class="row">
       <div class="col-1 listing filled">
@@ -75,7 +79,7 @@ HEADER;
         $url,
         $matched);
 
-      $semester_data = MockSemesters::getSemesterDataById($matched['semesterId']);
+      $semester_data = SemesterModel::create()->getByNumber($matched['semesterId']);
 
       $page = new SemesterPage($matched['semesterId']);
       $page->setHead($matched['semesterId'] . ' semester');

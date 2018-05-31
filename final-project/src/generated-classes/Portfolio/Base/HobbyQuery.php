@@ -21,10 +21,12 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildHobbyQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildHobbyQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildHobbyQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method     ChildHobbyQuery orderByDescription($order = Criteria::ASC) Order by the description column
  *
  * @method     ChildHobbyQuery groupById() Group by the id column
+ * @method     ChildHobbyQuery groupByName() Group by the name column
  * @method     ChildHobbyQuery groupByTitle() Group by the title column
  * @method     ChildHobbyQuery groupByDescription() Group by the description column
  *
@@ -36,22 +38,23 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHobbyQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildHobbyQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildHobbyQuery leftJoinHobbyListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the HobbyListing relation
- * @method     ChildHobbyQuery rightJoinHobbyListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the HobbyListing relation
- * @method     ChildHobbyQuery innerJoinHobbyListing($relationAlias = null) Adds a INNER JOIN clause to the query using the HobbyListing relation
+ * @method     ChildHobbyQuery leftJoinHobbyItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the HobbyItem relation
+ * @method     ChildHobbyQuery rightJoinHobbyItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the HobbyItem relation
+ * @method     ChildHobbyQuery innerJoinHobbyItem($relationAlias = null) Adds a INNER JOIN clause to the query using the HobbyItem relation
  *
- * @method     ChildHobbyQuery joinWithHobbyListing($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the HobbyListing relation
+ * @method     ChildHobbyQuery joinWithHobbyItem($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the HobbyItem relation
  *
- * @method     ChildHobbyQuery leftJoinWithHobbyListing() Adds a LEFT JOIN clause and with to the query using the HobbyListing relation
- * @method     ChildHobbyQuery rightJoinWithHobbyListing() Adds a RIGHT JOIN clause and with to the query using the HobbyListing relation
- * @method     ChildHobbyQuery innerJoinWithHobbyListing() Adds a INNER JOIN clause and with to the query using the HobbyListing relation
+ * @method     ChildHobbyQuery leftJoinWithHobbyItem() Adds a LEFT JOIN clause and with to the query using the HobbyItem relation
+ * @method     ChildHobbyQuery rightJoinWithHobbyItem() Adds a RIGHT JOIN clause and with to the query using the HobbyItem relation
+ * @method     ChildHobbyQuery innerJoinWithHobbyItem() Adds a INNER JOIN clause and with to the query using the HobbyItem relation
  *
- * @method     \Portfolio\HobbyListingQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Portfolio\HobbyItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildHobby findOne(ConnectionInterface $con = null) Return the first ChildHobby matching the query
  * @method     ChildHobby findOneOrCreate(ConnectionInterface $con = null) Return the first ChildHobby matching the query, or a new ChildHobby object populated from the query conditions when no match is found
  *
  * @method     ChildHobby findOneById(int $id) Return the first ChildHobby filtered by the id column
+ * @method     ChildHobby findOneByName(string $name) Return the first ChildHobby filtered by the name column
  * @method     ChildHobby findOneByTitle(string $title) Return the first ChildHobby filtered by the title column
  * @method     ChildHobby findOneByDescription(string $description) Return the first ChildHobby filtered by the description column *
 
@@ -59,11 +62,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHobby requireOne(ConnectionInterface $con = null) Return the first ChildHobby matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildHobby requireOneById(int $id) Return the first ChildHobby filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildHobby requireOneByName(string $name) Return the first ChildHobby filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHobby requireOneByTitle(string $title) Return the first ChildHobby filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHobby requireOneByDescription(string $description) Return the first ChildHobby filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildHobby[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildHobby objects based on current ModelCriteria
  * @method     ChildHobby[]|ObjectCollection findById(int $id) Return ChildHobby objects filtered by the id column
+ * @method     ChildHobby[]|ObjectCollection findByName(string $name) Return ChildHobby objects filtered by the name column
  * @method     ChildHobby[]|ObjectCollection findByTitle(string $title) Return ChildHobby objects filtered by the title column
  * @method     ChildHobby[]|ObjectCollection findByDescription(string $description) Return ChildHobby objects filtered by the description column
  * @method     ChildHobby[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -164,7 +169,7 @@ abstract class HobbyQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, title, description FROM hobby WHERE id = :p0';
+        $sql = 'SELECT id, name, title, description FROM hobby WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -296,6 +301,31 @@ abstract class HobbyQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $name The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildHobbyQuery The current query, for fluid interface
+     */
+    public function filterByName($name = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($name)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(HobbyTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
      * Filter the query on the title column
      *
      * Example usage:
@@ -346,40 +376,40 @@ abstract class HobbyQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Portfolio\HobbyListing object
+     * Filter the query by a related \Portfolio\HobbyItem object
      *
-     * @param \Portfolio\HobbyListing|ObjectCollection $hobbyListing the related object to use as filter
+     * @param \Portfolio\HobbyItem|ObjectCollection $hobbyItem the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildHobbyQuery The current query, for fluid interface
      */
-    public function filterByHobbyListing($hobbyListing, $comparison = null)
+    public function filterByHobbyItem($hobbyItem, $comparison = null)
     {
-        if ($hobbyListing instanceof \Portfolio\HobbyListing) {
+        if ($hobbyItem instanceof \Portfolio\HobbyItem) {
             return $this
-                ->addUsingAlias(HobbyTableMap::COL_ID, $hobbyListing->getHobbyId(), $comparison);
-        } elseif ($hobbyListing instanceof ObjectCollection) {
+                ->addUsingAlias(HobbyTableMap::COL_ID, $hobbyItem->getHobbyId(), $comparison);
+        } elseif ($hobbyItem instanceof ObjectCollection) {
             return $this
-                ->useHobbyListingQuery()
-                ->filterByPrimaryKeys($hobbyListing->getPrimaryKeys())
+                ->useHobbyItemQuery()
+                ->filterByPrimaryKeys($hobbyItem->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByHobbyListing() only accepts arguments of type \Portfolio\HobbyListing or Collection');
+            throw new PropelException('filterByHobbyItem() only accepts arguments of type \Portfolio\HobbyItem or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the HobbyListing relation
+     * Adds a JOIN clause to the query using the HobbyItem relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildHobbyQuery The current query, for fluid interface
      */
-    public function joinHobbyListing($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinHobbyItem($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('HobbyListing');
+        $relationMap = $tableMap->getRelation('HobbyItem');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -394,14 +424,14 @@ abstract class HobbyQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'HobbyListing');
+            $this->addJoinObject($join, 'HobbyItem');
         }
 
         return $this;
     }
 
     /**
-     * Use the HobbyListing relation HobbyListing object
+     * Use the HobbyItem relation HobbyItem object
      *
      * @see useQuery()
      *
@@ -409,13 +439,13 @@ abstract class HobbyQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Portfolio\HobbyListingQuery A secondary query class using the current class as primary query
+     * @return \Portfolio\HobbyItemQuery A secondary query class using the current class as primary query
      */
-    public function useHobbyListingQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useHobbyItemQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinHobbyListing($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'HobbyListing', '\Portfolio\HobbyListingQuery');
+            ->joinHobbyItem($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'HobbyItem', '\Portfolio\HobbyItemQuery');
     }
 
     /**

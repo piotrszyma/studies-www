@@ -2,8 +2,8 @@
 
 namespace Portfolio\Map;
 
-use Portfolio\Hobby;
-use Portfolio\HobbyQuery;
+use Portfolio\HobbyItem;
+use Portfolio\HobbyItemQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'hobby' table.
+ * This class defines the structure of the 'hobby_item' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class HobbyTableMap extends TableMap
+class HobbyItemTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class HobbyTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'Portfolio.Map.HobbyTableMap';
+    const CLASS_NAME = 'Portfolio.Map.HobbyItemTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class HobbyTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'hobby';
+    const TABLE_NAME = 'hobby_item';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Portfolio\\Hobby';
+    const OM_CLASS = '\\Portfolio\\HobbyItem';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Portfolio.Hobby';
+    const CLASS_DEFAULT = 'Portfolio.HobbyItem';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,27 +69,32 @@ class HobbyTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'hobby.id';
+    const COL_ID = 'hobby_item.id';
 
     /**
-     * the column name for the name field
+     * the column name for the hobby_id field
      */
-    const COL_NAME = 'hobby.name';
+    const COL_HOBBY_ID = 'hobby_item.hobby_id';
 
     /**
-     * the column name for the title field
+     * the column name for the year field
      */
-    const COL_TITLE = 'hobby.title';
+    const COL_YEAR = 'hobby_item.year';
+
+    /**
+     * the column name for the footer field
+     */
+    const COL_FOOTER = 'hobby_item.footer';
 
     /**
      * the column name for the description field
      */
-    const COL_DESCRIPTION = 'hobby.description';
+    const COL_DESCRIPTION = 'hobby_item.description';
 
     /**
      * The default string format for model objects of the related table
@@ -103,11 +108,11 @@ class HobbyTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Title', 'Description', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'title', 'description', ),
-        self::TYPE_COLNAME       => array(HobbyTableMap::COL_ID, HobbyTableMap::COL_NAME, HobbyTableMap::COL_TITLE, HobbyTableMap::COL_DESCRIPTION, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'title', 'description', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id', 'HobbyId', 'Year', 'Footer', 'Description', ),
+        self::TYPE_CAMELNAME     => array('id', 'hobbyId', 'year', 'footer', 'description', ),
+        self::TYPE_COLNAME       => array(HobbyItemTableMap::COL_ID, HobbyItemTableMap::COL_HOBBY_ID, HobbyItemTableMap::COL_YEAR, HobbyItemTableMap::COL_FOOTER, HobbyItemTableMap::COL_DESCRIPTION, ),
+        self::TYPE_FIELDNAME     => array('id', 'hobby_id', 'year', 'footer', 'description', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -117,11 +122,11 @@ class HobbyTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Title' => 2, 'Description' => 3, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'title' => 2, 'description' => 3, ),
-        self::TYPE_COLNAME       => array(HobbyTableMap::COL_ID => 0, HobbyTableMap::COL_NAME => 1, HobbyTableMap::COL_TITLE => 2, HobbyTableMap::COL_DESCRIPTION => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'title' => 2, 'description' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'HobbyId' => 1, 'Year' => 2, 'Footer' => 3, 'Description' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'hobbyId' => 1, 'year' => 2, 'footer' => 3, 'description' => 4, ),
+        self::TYPE_COLNAME       => array(HobbyItemTableMap::COL_ID => 0, HobbyItemTableMap::COL_HOBBY_ID => 1, HobbyItemTableMap::COL_YEAR => 2, HobbyItemTableMap::COL_FOOTER => 3, HobbyItemTableMap::COL_DESCRIPTION => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'hobby_id' => 1, 'year' => 2, 'footer' => 3, 'description' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -134,17 +139,18 @@ class HobbyTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('hobby');
-        $this->setPhpName('Hobby');
+        $this->setName('hobby_item');
+        $this->setPhpName('HobbyItem');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Portfolio\\Hobby');
+        $this->setClassName('\\Portfolio\\HobbyItem');
         $this->setPackage('Portfolio');
         $this->setUseIdGenerator(true);
-        $this->setPrimaryKeyMethodInfo('hobby_id_seq');
+        $this->setPrimaryKeyMethodInfo('hobby_item_id_seq');
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', true, 4096, null);
-        $this->addColumn('title', 'Title', 'VARCHAR', true, 4096, null);
+        $this->addForeignKey('hobby_id', 'HobbyId', 'INTEGER', 'hobby', 'id', false, null, null);
+        $this->addColumn('year', 'Year', 'INTEGER', true, 12, null);
+        $this->addColumn('footer', 'Footer', 'VARCHAR', true, 4096, null);
         $this->addColumn('description', 'Description', 'VARCHAR', true, 4096, null);
     } // initialize()
 
@@ -153,13 +159,13 @@ class HobbyTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('HobbyItem', '\\Portfolio\\HobbyItem', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Hobby', '\\Portfolio\\Hobby', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':hobby_id',
     1 => ':id',
   ),
-), null, null, 'HobbyItems', false);
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -219,7 +225,7 @@ class HobbyTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? HobbyTableMap::CLASS_DEFAULT : HobbyTableMap::OM_CLASS;
+        return $withPrefix ? HobbyItemTableMap::CLASS_DEFAULT : HobbyItemTableMap::OM_CLASS;
     }
 
     /**
@@ -233,22 +239,22 @@ class HobbyTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Hobby object, last column rank)
+     * @return array           (HobbyItem object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = HobbyTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = HobbyTableMap::getInstanceFromPool($key))) {
+        $key = HobbyItemTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = HobbyItemTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + HobbyTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + HobbyItemTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = HobbyTableMap::OM_CLASS;
-            /** @var Hobby $obj */
+            $cls = HobbyItemTableMap::OM_CLASS;
+            /** @var HobbyItem $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            HobbyTableMap::addInstanceToPool($obj, $key);
+            HobbyItemTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -271,18 +277,18 @@ class HobbyTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = HobbyTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = HobbyTableMap::getInstanceFromPool($key))) {
+            $key = HobbyItemTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = HobbyItemTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Hobby $obj */
+                /** @var HobbyItem $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                HobbyTableMap::addInstanceToPool($obj, $key);
+                HobbyItemTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -303,14 +309,16 @@ class HobbyTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(HobbyTableMap::COL_ID);
-            $criteria->addSelectColumn(HobbyTableMap::COL_NAME);
-            $criteria->addSelectColumn(HobbyTableMap::COL_TITLE);
-            $criteria->addSelectColumn(HobbyTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(HobbyItemTableMap::COL_ID);
+            $criteria->addSelectColumn(HobbyItemTableMap::COL_HOBBY_ID);
+            $criteria->addSelectColumn(HobbyItemTableMap::COL_YEAR);
+            $criteria->addSelectColumn(HobbyItemTableMap::COL_FOOTER);
+            $criteria->addSelectColumn(HobbyItemTableMap::COL_DESCRIPTION);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.title');
+            $criteria->addSelectColumn($alias . '.hobby_id');
+            $criteria->addSelectColumn($alias . '.year');
+            $criteria->addSelectColumn($alias . '.footer');
             $criteria->addSelectColumn($alias . '.description');
         }
     }
@@ -324,7 +332,7 @@ class HobbyTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(HobbyTableMap::DATABASE_NAME)->getTable(HobbyTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(HobbyItemTableMap::DATABASE_NAME)->getTable(HobbyItemTableMap::TABLE_NAME);
     }
 
     /**
@@ -332,16 +340,16 @@ class HobbyTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(HobbyTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(HobbyTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new HobbyTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(HobbyItemTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(HobbyItemTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new HobbyItemTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Hobby or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a HobbyItem or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Hobby object or primary key or array of primary keys
+     * @param mixed               $values Criteria or HobbyItem object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -352,27 +360,27 @@ class HobbyTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HobbyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HobbyItemTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Portfolio\Hobby) { // it's a model object
+        } elseif ($values instanceof \Portfolio\HobbyItem) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(HobbyTableMap::DATABASE_NAME);
-            $criteria->add(HobbyTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(HobbyItemTableMap::DATABASE_NAME);
+            $criteria->add(HobbyItemTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = HobbyQuery::create()->mergeWith($criteria);
+        $query = HobbyItemQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            HobbyTableMap::clearInstancePool();
+            HobbyItemTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                HobbyTableMap::removeInstanceFromPool($singleval);
+                HobbyItemTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -380,20 +388,20 @@ class HobbyTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the hobby table.
+     * Deletes all rows from the hobby_item table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return HobbyQuery::create()->doDeleteAll($con);
+        return HobbyItemQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Hobby or Criteria object.
+     * Performs an INSERT on the database, given a HobbyItem or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Hobby object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or HobbyItem object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -402,22 +410,22 @@ class HobbyTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HobbyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HobbyItemTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Hobby object
+            $criteria = $criteria->buildCriteria(); // build Criteria from HobbyItem object
         }
 
-        if ($criteria->containsKey(HobbyTableMap::COL_ID) && $criteria->keyContainsValue(HobbyTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.HobbyTableMap::COL_ID.')');
+        if ($criteria->containsKey(HobbyItemTableMap::COL_ID) && $criteria->keyContainsValue(HobbyItemTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.HobbyItemTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = HobbyQuery::create()->mergeWith($criteria);
+        $query = HobbyItemQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -426,7 +434,7 @@ class HobbyTableMap extends TableMap
         });
     }
 
-} // HobbyTableMap
+} // HobbyItemTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-HobbyTableMap::buildTableMap();
+HobbyItemTableMap::buildTableMap();

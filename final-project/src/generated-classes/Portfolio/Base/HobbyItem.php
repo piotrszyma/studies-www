@@ -5,17 +5,14 @@ namespace Portfolio\Base;
 use \Exception;
 use \PDO;
 use Portfolio\Hobby as ChildHobby;
-use Portfolio\HobbyItem as ChildHobbyItem;
 use Portfolio\HobbyItemQuery as ChildHobbyItemQuery;
 use Portfolio\HobbyQuery as ChildHobbyQuery;
 use Portfolio\Map\HobbyItemTableMap;
-use Portfolio\Map\HobbyTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -24,18 +21,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'hobby' table.
+ * Base class that represents a row from the 'hobby_item' table.
  *
  *
  *
  * @package    propel.generator.Portfolio.Base
  */
-abstract class Hobby implements ActiveRecordInterface
+abstract class HobbyItem implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Portfolio\\Map\\HobbyTableMap';
+    const TABLE_MAP = '\\Portfolio\\Map\\HobbyItemTableMap';
 
 
     /**
@@ -72,18 +69,25 @@ abstract class Hobby implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
+     * The value for the hobby_id field.
      *
-     * @var        string
+     * @var        int
      */
-    protected $name;
+    protected $hobby_id;
 
     /**
-     * The value for the title field.
+     * The value for the year field.
+     *
+     * @var        int
+     */
+    protected $year;
+
+    /**
+     * The value for the footer field.
      *
      * @var        string
      */
-    protected $title;
+    protected $footer;
 
     /**
      * The value for the description field.
@@ -93,10 +97,9 @@ abstract class Hobby implements ActiveRecordInterface
     protected $description;
 
     /**
-     * @var        ObjectCollection|ChildHobbyItem[] Collection to store aggregation of ChildHobbyItem objects.
+     * @var        ChildHobby
      */
-    protected $collHobbyItems;
-    protected $collHobbyItemsPartial;
+    protected $aHobby;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -107,13 +110,7 @@ abstract class Hobby implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildHobbyItem[]
-     */
-    protected $hobbyItemsScheduledForDeletion = null;
-
-    /**
-     * Initializes internal state of Portfolio\Base\Hobby object.
+     * Initializes internal state of Portfolio\Base\HobbyItem object.
      */
     public function __construct()
     {
@@ -208,9 +205,9 @@ abstract class Hobby implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Hobby</code> instance.  If
-     * <code>obj</code> is an instance of <code>Hobby</code>, delegates to
-     * <code>equals(Hobby)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>HobbyItem</code> instance.  If
+     * <code>obj</code> is an instance of <code>HobbyItem</code>, delegates to
+     * <code>equals(HobbyItem)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -276,7 +273,7 @@ abstract class Hobby implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Hobby The current object, for fluid interface
+     * @return $this|HobbyItem The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -348,23 +345,33 @@ abstract class Hobby implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
+     * Get the [hobby_id] column value.
      *
-     * @return string
+     * @return int
      */
-    public function getName()
+    public function getHobbyId()
     {
-        return $this->name;
+        return $this->hobby_id;
     }
 
     /**
-     * Get the [title] column value.
+     * Get the [year] column value.
+     *
+     * @return int
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * Get the [footer] column value.
      *
      * @return string
      */
-    public function getTitle()
+    public function getFooter()
     {
-        return $this->title;
+        return $this->footer;
     }
 
     /**
@@ -381,7 +388,7 @@ abstract class Hobby implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Portfolio\Hobby The current object (for fluent API support)
+     * @return $this|\Portfolio\HobbyItem The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -391,57 +398,81 @@ abstract class Hobby implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[HobbyTableMap::COL_ID] = true;
+            $this->modifiedColumns[HobbyItemTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [name] column.
+     * Set the value of [hobby_id] column.
      *
-     * @param string $v new value
-     * @return $this|\Portfolio\Hobby The current object (for fluent API support)
+     * @param int $v new value
+     * @return $this|\Portfolio\HobbyItem The current object (for fluent API support)
      */
-    public function setName($v)
+    public function setHobbyId($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[HobbyTableMap::COL_NAME] = true;
+        if ($this->hobby_id !== $v) {
+            $this->hobby_id = $v;
+            $this->modifiedColumns[HobbyItemTableMap::COL_HOBBY_ID] = true;
+        }
+
+        if ($this->aHobby !== null && $this->aHobby->getId() !== $v) {
+            $this->aHobby = null;
         }
 
         return $this;
-    } // setName()
+    } // setHobbyId()
 
     /**
-     * Set the value of [title] column.
+     * Set the value of [year] column.
+     *
+     * @param int $v new value
+     * @return $this|\Portfolio\HobbyItem The current object (for fluent API support)
+     */
+    public function setYear($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->year !== $v) {
+            $this->year = $v;
+            $this->modifiedColumns[HobbyItemTableMap::COL_YEAR] = true;
+        }
+
+        return $this;
+    } // setYear()
+
+    /**
+     * Set the value of [footer] column.
      *
      * @param string $v new value
-     * @return $this|\Portfolio\Hobby The current object (for fluent API support)
+     * @return $this|\Portfolio\HobbyItem The current object (for fluent API support)
      */
-    public function setTitle($v)
+    public function setFooter($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->title !== $v) {
-            $this->title = $v;
-            $this->modifiedColumns[HobbyTableMap::COL_TITLE] = true;
+        if ($this->footer !== $v) {
+            $this->footer = $v;
+            $this->modifiedColumns[HobbyItemTableMap::COL_FOOTER] = true;
         }
 
         return $this;
-    } // setTitle()
+    } // setFooter()
 
     /**
      * Set the value of [description] column.
      *
      * @param string $v new value
-     * @return $this|\Portfolio\Hobby The current object (for fluent API support)
+     * @return $this|\Portfolio\HobbyItem The current object (for fluent API support)
      */
     public function setDescription($v)
     {
@@ -451,7 +482,7 @@ abstract class Hobby implements ActiveRecordInterface
 
         if ($this->description !== $v) {
             $this->description = $v;
-            $this->modifiedColumns[HobbyTableMap::COL_DESCRIPTION] = true;
+            $this->modifiedColumns[HobbyItemTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
@@ -493,16 +524,19 @@ abstract class Hobby implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : HobbyTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : HobbyItemTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : HobbyTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : HobbyItemTableMap::translateFieldName('HobbyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->hobby_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : HobbyTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->title = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : HobbyItemTableMap::translateFieldName('Year', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->year = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : HobbyTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : HobbyItemTableMap::translateFieldName('Footer', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->footer = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : HobbyItemTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -512,10 +546,10 @@ abstract class Hobby implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = HobbyTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = HobbyItemTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Portfolio\\Hobby'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Portfolio\\HobbyItem'), 0, $e);
         }
     }
 
@@ -534,6 +568,9 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aHobby !== null && $this->hobby_id !== $this->aHobby->getId()) {
+            $this->aHobby = null;
+        }
     } // ensureConsistency
 
     /**
@@ -557,13 +594,13 @@ abstract class Hobby implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(HobbyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(HobbyItemTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildHobbyQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildHobbyItemQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -573,8 +610,7 @@ abstract class Hobby implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collHobbyItems = null;
-
+            $this->aHobby = null;
         } // if (deep)
     }
 
@@ -584,8 +620,8 @@ abstract class Hobby implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Hobby::setDeleted()
-     * @see Hobby::isDeleted()
+     * @see HobbyItem::setDeleted()
+     * @see HobbyItem::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -594,11 +630,11 @@ abstract class Hobby implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HobbyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HobbyItemTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildHobbyQuery::create()
+            $deleteQuery = ChildHobbyItemQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -633,7 +669,7 @@ abstract class Hobby implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HobbyTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HobbyItemTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -652,7 +688,7 @@ abstract class Hobby implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                HobbyTableMap::addInstanceToPool($this);
+                HobbyItemTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -678,6 +714,18 @@ abstract class Hobby implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aHobby !== null) {
+                if ($this->aHobby->isModified() || $this->aHobby->isNew()) {
+                    $affectedRows += $this->aHobby->save($con);
+                }
+                $this->setHobby($this->aHobby);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -687,24 +735,6 @@ abstract class Hobby implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->hobbyItemsScheduledForDeletion !== null) {
-                if (!$this->hobbyItemsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->hobbyItemsScheduledForDeletion as $hobbyItem) {
-                        // need to save related object because we set the relation to null
-                        $hobbyItem->save($con);
-                    }
-                    $this->hobbyItemsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collHobbyItems !== null) {
-                foreach ($this->collHobbyItems as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -727,13 +757,13 @@ abstract class Hobby implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[HobbyTableMap::COL_ID] = true;
+        $this->modifiedColumns[HobbyItemTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . HobbyTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . HobbyItemTableMap::COL_ID . ')');
         }
         if (null === $this->id) {
             try {
-                $dataFetcher = $con->query("SELECT nextval('hobby_id_seq')");
+                $dataFetcher = $con->query("SELECT nextval('hobby_item_id_seq')");
                 $this->id = (int) $dataFetcher->fetchColumn();
             } catch (Exception $e) {
                 throw new PropelException('Unable to get sequence id.', 0, $e);
@@ -742,21 +772,24 @@ abstract class Hobby implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(HobbyTableMap::COL_ID)) {
+        if ($this->isColumnModified(HobbyItemTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(HobbyTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'name';
+        if ($this->isColumnModified(HobbyItemTableMap::COL_HOBBY_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'hobby_id';
         }
-        if ($this->isColumnModified(HobbyTableMap::COL_TITLE)) {
-            $modifiedColumns[':p' . $index++]  = 'title';
+        if ($this->isColumnModified(HobbyItemTableMap::COL_YEAR)) {
+            $modifiedColumns[':p' . $index++]  = 'year';
         }
-        if ($this->isColumnModified(HobbyTableMap::COL_DESCRIPTION)) {
+        if ($this->isColumnModified(HobbyItemTableMap::COL_FOOTER)) {
+            $modifiedColumns[':p' . $index++]  = 'footer';
+        }
+        if ($this->isColumnModified(HobbyItemTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
 
         $sql = sprintf(
-            'INSERT INTO hobby (%s) VALUES (%s)',
+            'INSERT INTO hobby_item (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -768,11 +801,14 @@ abstract class Hobby implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'name':
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                    case 'hobby_id':
+                        $stmt->bindValue($identifier, $this->hobby_id, PDO::PARAM_INT);
                         break;
-                    case 'title':
-                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                    case 'year':
+                        $stmt->bindValue($identifier, $this->year, PDO::PARAM_INT);
+                        break;
+                    case 'footer':
+                        $stmt->bindValue($identifier, $this->footer, PDO::PARAM_STR);
                         break;
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
@@ -816,7 +852,7 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = HobbyTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = HobbyItemTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -836,12 +872,15 @@ abstract class Hobby implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
+                return $this->getHobbyId();
                 break;
             case 2:
-                return $this->getTitle();
+                return $this->getYear();
                 break;
             case 3:
+                return $this->getFooter();
+                break;
+            case 4:
                 return $this->getDescription();
                 break;
             default:
@@ -868,16 +907,17 @@ abstract class Hobby implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Hobby'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['HobbyItem'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Hobby'][$this->hashCode()] = true;
-        $keys = HobbyTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['HobbyItem'][$this->hashCode()] = true;
+        $keys = HobbyItemTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getTitle(),
-            $keys[3] => $this->getDescription(),
+            $keys[1] => $this->getHobbyId(),
+            $keys[2] => $this->getYear(),
+            $keys[3] => $this->getFooter(),
+            $keys[4] => $this->getDescription(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -885,20 +925,20 @@ abstract class Hobby implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collHobbyItems) {
+            if (null !== $this->aHobby) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'hobbyItems';
+                        $key = 'hobby';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'hobby_items';
+                        $key = 'hobby';
                         break;
                     default:
-                        $key = 'HobbyItems';
+                        $key = 'Hobby';
                 }
 
-                $result[$key] = $this->collHobbyItems->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->aHobby->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -914,11 +954,11 @@ abstract class Hobby implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Portfolio\Hobby
+     * @return $this|\Portfolio\HobbyItem
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = HobbyTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = HobbyItemTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -929,7 +969,7 @@ abstract class Hobby implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Portfolio\Hobby
+     * @return $this|\Portfolio\HobbyItem
      */
     public function setByPosition($pos, $value)
     {
@@ -938,12 +978,15 @@ abstract class Hobby implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
+                $this->setHobbyId($value);
                 break;
             case 2:
-                $this->setTitle($value);
+                $this->setYear($value);
                 break;
             case 3:
+                $this->setFooter($value);
+                break;
+            case 4:
                 $this->setDescription($value);
                 break;
         } // switch()
@@ -970,19 +1013,22 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = HobbyTableMap::getFieldNames($keyType);
+        $keys = HobbyItemTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setName($arr[$keys[1]]);
+            $this->setHobbyId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setTitle($arr[$keys[2]]);
+            $this->setYear($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDescription($arr[$keys[3]]);
+            $this->setFooter($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setDescription($arr[$keys[4]]);
         }
     }
 
@@ -1003,7 +1049,7 @@ abstract class Hobby implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Portfolio\Hobby The current object, for fluid interface
+     * @return $this|\Portfolio\HobbyItem The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1023,19 +1069,22 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(HobbyTableMap::DATABASE_NAME);
+        $criteria = new Criteria(HobbyItemTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(HobbyTableMap::COL_ID)) {
-            $criteria->add(HobbyTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(HobbyItemTableMap::COL_ID)) {
+            $criteria->add(HobbyItemTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(HobbyTableMap::COL_NAME)) {
-            $criteria->add(HobbyTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(HobbyItemTableMap::COL_HOBBY_ID)) {
+            $criteria->add(HobbyItemTableMap::COL_HOBBY_ID, $this->hobby_id);
         }
-        if ($this->isColumnModified(HobbyTableMap::COL_TITLE)) {
-            $criteria->add(HobbyTableMap::COL_TITLE, $this->title);
+        if ($this->isColumnModified(HobbyItemTableMap::COL_YEAR)) {
+            $criteria->add(HobbyItemTableMap::COL_YEAR, $this->year);
         }
-        if ($this->isColumnModified(HobbyTableMap::COL_DESCRIPTION)) {
-            $criteria->add(HobbyTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(HobbyItemTableMap::COL_FOOTER)) {
+            $criteria->add(HobbyItemTableMap::COL_FOOTER, $this->footer);
+        }
+        if ($this->isColumnModified(HobbyItemTableMap::COL_DESCRIPTION)) {
+            $criteria->add(HobbyItemTableMap::COL_DESCRIPTION, $this->description);
         }
 
         return $criteria;
@@ -1053,8 +1102,8 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildHobbyQuery::create();
-        $criteria->add(HobbyTableMap::COL_ID, $this->id);
+        $criteria = ChildHobbyItemQuery::create();
+        $criteria->add(HobbyItemTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1116,30 +1165,17 @@ abstract class Hobby implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Portfolio\Hobby (or compatible) type.
+     * @param      object $copyObj An object of \Portfolio\HobbyItem (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
-        $copyObj->setTitle($this->getTitle());
+        $copyObj->setHobbyId($this->getHobbyId());
+        $copyObj->setYear($this->getYear());
+        $copyObj->setFooter($this->getFooter());
         $copyObj->setDescription($this->getDescription());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getHobbyItems() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addHobbyItem($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1155,7 +1191,7 @@ abstract class Hobby implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Portfolio\Hobby Clone of current object.
+     * @return \Portfolio\HobbyItem Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1168,246 +1204,55 @@ abstract class Hobby implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildHobby object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('HobbyItem' == $relationName) {
-            $this->initHobbyItems();
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collHobbyItems collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addHobbyItems()
-     */
-    public function clearHobbyItems()
-    {
-        $this->collHobbyItems = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collHobbyItems collection loaded partially.
-     */
-    public function resetPartialHobbyItems($v = true)
-    {
-        $this->collHobbyItemsPartial = $v;
-    }
-
-    /**
-     * Initializes the collHobbyItems collection.
-     *
-     * By default this just sets the collHobbyItems collection to an empty array (like clearcollHobbyItems());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initHobbyItems($overrideExisting = true)
-    {
-        if (null !== $this->collHobbyItems && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = HobbyItemTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collHobbyItems = new $collectionClassName;
-        $this->collHobbyItems->setModel('\Portfolio\HobbyItem');
-    }
-
-    /**
-     * Gets an array of ChildHobbyItem objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildHobby is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildHobbyItem[] List of ChildHobbyItem objects
+     * @param  ChildHobby $v
+     * @return $this|\Portfolio\HobbyItem The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getHobbyItems(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function setHobby(ChildHobby $v = null)
     {
-        $partial = $this->collHobbyItemsPartial && !$this->isNew();
-        if (null === $this->collHobbyItems || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collHobbyItems) {
-                // return empty collection
-                $this->initHobbyItems();
-            } else {
-                $collHobbyItems = ChildHobbyItemQuery::create(null, $criteria)
-                    ->filterByHobby($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collHobbyItemsPartial && count($collHobbyItems)) {
-                        $this->initHobbyItems(false);
-
-                        foreach ($collHobbyItems as $obj) {
-                            if (false == $this->collHobbyItems->contains($obj)) {
-                                $this->collHobbyItems->append($obj);
-                            }
-                        }
-
-                        $this->collHobbyItemsPartial = true;
-                    }
-
-                    return $collHobbyItems;
-                }
-
-                if ($partial && $this->collHobbyItems) {
-                    foreach ($this->collHobbyItems as $obj) {
-                        if ($obj->isNew()) {
-                            $collHobbyItems[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collHobbyItems = $collHobbyItems;
-                $this->collHobbyItemsPartial = false;
-            }
+        if ($v === null) {
+            $this->setHobbyId(NULL);
+        } else {
+            $this->setHobbyId($v->getId());
         }
 
-        return $this->collHobbyItems;
-    }
+        $this->aHobby = $v;
 
-    /**
-     * Sets a collection of ChildHobbyItem objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $hobbyItems A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildHobby The current object (for fluent API support)
-     */
-    public function setHobbyItems(Collection $hobbyItems, ConnectionInterface $con = null)
-    {
-        /** @var ChildHobbyItem[] $hobbyItemsToDelete */
-        $hobbyItemsToDelete = $this->getHobbyItems(new Criteria(), $con)->diff($hobbyItems);
-
-
-        $this->hobbyItemsScheduledForDeletion = $hobbyItemsToDelete;
-
-        foreach ($hobbyItemsToDelete as $hobbyItemRemoved) {
-            $hobbyItemRemoved->setHobby(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildHobby object, it will not be re-added.
+        if ($v !== null) {
+            $v->addHobbyItem($this);
         }
 
-        $this->collHobbyItems = null;
-        foreach ($hobbyItems as $hobbyItem) {
-            $this->addHobbyItem($hobbyItem);
-        }
-
-        $this->collHobbyItems = $hobbyItems;
-        $this->collHobbyItemsPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related HobbyItem objects.
+     * Get the associated ChildHobby object
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related HobbyItem objects.
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildHobby The associated ChildHobby object.
      * @throws PropelException
      */
-    public function countHobbyItems(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function getHobby(ConnectionInterface $con = null)
     {
-        $partial = $this->collHobbyItemsPartial && !$this->isNew();
-        if (null === $this->collHobbyItems || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collHobbyItems) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getHobbyItems());
-            }
-
-            $query = ChildHobbyItemQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByHobby($this)
-                ->count($con);
+        if ($this->aHobby === null && ($this->hobby_id != 0)) {
+            $this->aHobby = ChildHobbyQuery::create()->findPk($this->hobby_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aHobby->addHobbyItems($this);
+             */
         }
 
-        return count($this->collHobbyItems);
-    }
-
-    /**
-     * Method called to associate a ChildHobbyItem object to this object
-     * through the ChildHobbyItem foreign key attribute.
-     *
-     * @param  ChildHobbyItem $l ChildHobbyItem
-     * @return $this|\Portfolio\Hobby The current object (for fluent API support)
-     */
-    public function addHobbyItem(ChildHobbyItem $l)
-    {
-        if ($this->collHobbyItems === null) {
-            $this->initHobbyItems();
-            $this->collHobbyItemsPartial = true;
-        }
-
-        if (!$this->collHobbyItems->contains($l)) {
-            $this->doAddHobbyItem($l);
-
-            if ($this->hobbyItemsScheduledForDeletion and $this->hobbyItemsScheduledForDeletion->contains($l)) {
-                $this->hobbyItemsScheduledForDeletion->remove($this->hobbyItemsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildHobbyItem $hobbyItem The ChildHobbyItem object to add.
-     */
-    protected function doAddHobbyItem(ChildHobbyItem $hobbyItem)
-    {
-        $this->collHobbyItems[]= $hobbyItem;
-        $hobbyItem->setHobby($this);
-    }
-
-    /**
-     * @param  ChildHobbyItem $hobbyItem The ChildHobbyItem object to remove.
-     * @return $this|ChildHobby The current object (for fluent API support)
-     */
-    public function removeHobbyItem(ChildHobbyItem $hobbyItem)
-    {
-        if ($this->getHobbyItems()->contains($hobbyItem)) {
-            $pos = $this->collHobbyItems->search($hobbyItem);
-            $this->collHobbyItems->remove($pos);
-            if (null === $this->hobbyItemsScheduledForDeletion) {
-                $this->hobbyItemsScheduledForDeletion = clone $this->collHobbyItems;
-                $this->hobbyItemsScheduledForDeletion->clear();
-            }
-            $this->hobbyItemsScheduledForDeletion[]= $hobbyItem;
-            $hobbyItem->setHobby(null);
-        }
-
-        return $this;
+        return $this->aHobby;
     }
 
     /**
@@ -1417,9 +1262,13 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aHobby) {
+            $this->aHobby->removeHobbyItem($this);
+        }
         $this->id = null;
-        $this->name = null;
-        $this->title = null;
+        $this->hobby_id = null;
+        $this->year = null;
+        $this->footer = null;
         $this->description = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -1439,14 +1288,9 @@ abstract class Hobby implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collHobbyItems) {
-                foreach ($this->collHobbyItems as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collHobbyItems = null;
+        $this->aHobby = null;
     }
 
     /**
@@ -1456,7 +1300,7 @@ abstract class Hobby implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(HobbyTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(HobbyItemTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

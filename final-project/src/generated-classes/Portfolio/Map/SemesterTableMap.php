@@ -59,7 +59,7 @@ class SemesterTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,12 +69,17 @@ class SemesterTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the id field
      */
     const COL_ID = 'semester.id';
+
+    /**
+     * the column name for the number field
+     */
+    const COL_NUMBER = 'semester.number';
 
     /**
      * the column name for the about field
@@ -93,11 +98,11 @@ class SemesterTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'About', ),
-        self::TYPE_CAMELNAME     => array('id', 'about', ),
-        self::TYPE_COLNAME       => array(SemesterTableMap::COL_ID, SemesterTableMap::COL_ABOUT, ),
-        self::TYPE_FIELDNAME     => array('id', 'about', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'Number', 'About', ),
+        self::TYPE_CAMELNAME     => array('id', 'number', 'about', ),
+        self::TYPE_COLNAME       => array(SemesterTableMap::COL_ID, SemesterTableMap::COL_NUMBER, SemesterTableMap::COL_ABOUT, ),
+        self::TYPE_FIELDNAME     => array('id', 'number', 'about', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -107,11 +112,11 @@ class SemesterTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'About' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'about' => 1, ),
-        self::TYPE_COLNAME       => array(SemesterTableMap::COL_ID => 0, SemesterTableMap::COL_ABOUT => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'about' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Number' => 1, 'About' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'number' => 1, 'about' => 2, ),
+        self::TYPE_COLNAME       => array(SemesterTableMap::COL_ID => 0, SemesterTableMap::COL_NUMBER => 1, SemesterTableMap::COL_ABOUT => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'number' => 1, 'about' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -133,7 +138,8 @@ class SemesterTableMap extends TableMap
         $this->setPrimaryKeyMethodInfo('semester_id_seq');
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('about', 'About', 'VARCHAR', true, 128, null);
+        $this->addColumn('number', 'Number', 'INTEGER', true, null, null);
+        $this->addColumn('about', 'About', 'VARCHAR', true, 4096, null);
     } // initialize()
 
     /**
@@ -141,13 +147,13 @@ class SemesterTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('semesterListing', '\\Portfolio\\semesterListing', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('SemesterItem', '\\Portfolio\\SemesterItem', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':semester_id',
     1 => ':id',
   ),
-), null, null, 'semesterListings', false);
+), null, null, 'SemesterItems', false);
     } // buildRelations()
 
     /**
@@ -292,9 +298,11 @@ class SemesterTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(SemesterTableMap::COL_ID);
+            $criteria->addSelectColumn(SemesterTableMap::COL_NUMBER);
             $criteria->addSelectColumn(SemesterTableMap::COL_ABOUT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.number');
             $criteria->addSelectColumn($alias . '.about');
         }
     }

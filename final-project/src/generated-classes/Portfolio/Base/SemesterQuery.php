@@ -21,9 +21,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildSemesterQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildSemesterQuery orderByNumber($order = Criteria::ASC) Order by the number column
  * @method     ChildSemesterQuery orderByAbout($order = Criteria::ASC) Order by the about column
  *
  * @method     ChildSemesterQuery groupById() Group by the id column
+ * @method     ChildSemesterQuery groupByNumber() Group by the number column
  * @method     ChildSemesterQuery groupByAbout() Group by the about column
  *
  * @method     ChildSemesterQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -34,32 +36,35 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSemesterQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildSemesterQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildSemesterQuery leftJoinsemesterListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the semesterListing relation
- * @method     ChildSemesterQuery rightJoinsemesterListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the semesterListing relation
- * @method     ChildSemesterQuery innerJoinsemesterListing($relationAlias = null) Adds a INNER JOIN clause to the query using the semesterListing relation
+ * @method     ChildSemesterQuery leftJoinSemesterItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the SemesterItem relation
+ * @method     ChildSemesterQuery rightJoinSemesterItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SemesterItem relation
+ * @method     ChildSemesterQuery innerJoinSemesterItem($relationAlias = null) Adds a INNER JOIN clause to the query using the SemesterItem relation
  *
- * @method     ChildSemesterQuery joinWithsemesterListing($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the semesterListing relation
+ * @method     ChildSemesterQuery joinWithSemesterItem($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SemesterItem relation
  *
- * @method     ChildSemesterQuery leftJoinWithsemesterListing() Adds a LEFT JOIN clause and with to the query using the semesterListing relation
- * @method     ChildSemesterQuery rightJoinWithsemesterListing() Adds a RIGHT JOIN clause and with to the query using the semesterListing relation
- * @method     ChildSemesterQuery innerJoinWithsemesterListing() Adds a INNER JOIN clause and with to the query using the semesterListing relation
+ * @method     ChildSemesterQuery leftJoinWithSemesterItem() Adds a LEFT JOIN clause and with to the query using the SemesterItem relation
+ * @method     ChildSemesterQuery rightJoinWithSemesterItem() Adds a RIGHT JOIN clause and with to the query using the SemesterItem relation
+ * @method     ChildSemesterQuery innerJoinWithSemesterItem() Adds a INNER JOIN clause and with to the query using the SemesterItem relation
  *
- * @method     \Portfolio\semesterListingQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Portfolio\SemesterItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildSemester findOne(ConnectionInterface $con = null) Return the first ChildSemester matching the query
  * @method     ChildSemester findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSemester matching the query, or a new ChildSemester object populated from the query conditions when no match is found
  *
  * @method     ChildSemester findOneById(int $id) Return the first ChildSemester filtered by the id column
+ * @method     ChildSemester findOneByNumber(int $number) Return the first ChildSemester filtered by the number column
  * @method     ChildSemester findOneByAbout(string $about) Return the first ChildSemester filtered by the about column *
 
  * @method     ChildSemester requirePk($key, ConnectionInterface $con = null) Return the ChildSemester by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSemester requireOne(ConnectionInterface $con = null) Return the first ChildSemester matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSemester requireOneById(int $id) Return the first ChildSemester filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSemester requireOneByNumber(int $number) Return the first ChildSemester filtered by the number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSemester requireOneByAbout(string $about) Return the first ChildSemester filtered by the about column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSemester[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSemester objects based on current ModelCriteria
  * @method     ChildSemester[]|ObjectCollection findById(int $id) Return ChildSemester objects filtered by the id column
+ * @method     ChildSemester[]|ObjectCollection findByNumber(int $number) Return ChildSemester objects filtered by the number column
  * @method     ChildSemester[]|ObjectCollection findByAbout(string $about) Return ChildSemester objects filtered by the about column
  * @method     ChildSemester[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -159,7 +164,7 @@ abstract class SemesterQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, about FROM semester WHERE id = :p0';
+        $sql = 'SELECT id, number, about FROM semester WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -291,6 +296,47 @@ abstract class SemesterQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the number column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNumber(1234); // WHERE number = 1234
+     * $query->filterByNumber(array(12, 34)); // WHERE number IN (12, 34)
+     * $query->filterByNumber(array('min' => 12)); // WHERE number > 12
+     * </code>
+     *
+     * @param     mixed $number The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildSemesterQuery The current query, for fluid interface
+     */
+    public function filterByNumber($number = null, $comparison = null)
+    {
+        if (is_array($number)) {
+            $useMinMax = false;
+            if (isset($number['min'])) {
+                $this->addUsingAlias(SemesterTableMap::COL_NUMBER, $number['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($number['max'])) {
+                $this->addUsingAlias(SemesterTableMap::COL_NUMBER, $number['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(SemesterTableMap::COL_NUMBER, $number, $comparison);
+    }
+
+    /**
      * Filter the query on the about column
      *
      * Example usage:
@@ -316,40 +362,40 @@ abstract class SemesterQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Portfolio\semesterListing object
+     * Filter the query by a related \Portfolio\SemesterItem object
      *
-     * @param \Portfolio\semesterListing|ObjectCollection $semesterListing the related object to use as filter
+     * @param \Portfolio\SemesterItem|ObjectCollection $semesterItem the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildSemesterQuery The current query, for fluid interface
      */
-    public function filterBysemesterListing($semesterListing, $comparison = null)
+    public function filterBySemesterItem($semesterItem, $comparison = null)
     {
-        if ($semesterListing instanceof \Portfolio\semesterListing) {
+        if ($semesterItem instanceof \Portfolio\SemesterItem) {
             return $this
-                ->addUsingAlias(SemesterTableMap::COL_ID, $semesterListing->getSemesterId(), $comparison);
-        } elseif ($semesterListing instanceof ObjectCollection) {
+                ->addUsingAlias(SemesterTableMap::COL_ID, $semesterItem->getSemesterId(), $comparison);
+        } elseif ($semesterItem instanceof ObjectCollection) {
             return $this
-                ->usesemesterListingQuery()
-                ->filterByPrimaryKeys($semesterListing->getPrimaryKeys())
+                ->useSemesterItemQuery()
+                ->filterByPrimaryKeys($semesterItem->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterBysemesterListing() only accepts arguments of type \Portfolio\semesterListing or Collection');
+            throw new PropelException('filterBySemesterItem() only accepts arguments of type \Portfolio\SemesterItem or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the semesterListing relation
+     * Adds a JOIN clause to the query using the SemesterItem relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildSemesterQuery The current query, for fluid interface
      */
-    public function joinsemesterListing($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinSemesterItem($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('semesterListing');
+        $relationMap = $tableMap->getRelation('SemesterItem');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -364,14 +410,14 @@ abstract class SemesterQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'semesterListing');
+            $this->addJoinObject($join, 'SemesterItem');
         }
 
         return $this;
     }
 
     /**
-     * Use the semesterListing relation semesterListing object
+     * Use the SemesterItem relation SemesterItem object
      *
      * @see useQuery()
      *
@@ -379,13 +425,13 @@ abstract class SemesterQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Portfolio\semesterListingQuery A secondary query class using the current class as primary query
+     * @return \Portfolio\SemesterItemQuery A secondary query class using the current class as primary query
      */
-    public function usesemesterListingQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useSemesterItemQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinsemesterListing($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'semesterListing', '\Portfolio\semesterListingQuery');
+            ->joinSemesterItem($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SemesterItem', '\Portfolio\SemesterItemQuery');
     }
 
     /**

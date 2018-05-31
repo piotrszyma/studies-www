@@ -1,0 +1,65 @@
+
+/* Listing */
+
+.listing a:hover {
+  color: rgba(220, 220, 221, 1);
+  background-color: rgba(76, 92, 104, 1);
+}
+
+.listing > h2 {
+  padding: 0.5rem;
+  color: rgba(220, 220, 221, 1);
+  background-color: rgba(76, 92, 104, 1);
+  line-height: 1.5rem;
+}
+
+.filled .header {
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  color: rgba(220, 220, 221, 1);
+  background-color: rgba(76, 92, 104, 1);
+  padding: 0.5rem;
+}
+
+.filled .footer {
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  color: rgba(220, 220, 221, 1);
+  background-color: rgba(70, 73, 76, 1);
+  padding: 0.5rem;
+}
+
+.filled .content {
+  border-width: 0 2px 2px 2px;
+  border-color:  rgba(76, 92, 104, 1);
+  border-style: solid;
+}
+
+.filled .content ol {
+  padding: 0.5rem;
+  -webkit-padding-start: 40px;
+  
+}
+
+.filled .content p {
+  padding: 0.5rem;
+}
+
+.header.emphasis {
+  background-color: #68564c;
+}
+
+.content.emphasis {
+  border-color: #68564c; 
+}
+/* Image */
+
+.profile img {
+  width: 15em;
+}
+
+/* Back button */
+
+div.back {
+  flex-direction: row-reverse;
+}

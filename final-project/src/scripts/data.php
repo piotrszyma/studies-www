@@ -4,32 +4,30 @@
   require_once '/scripts/vendor/autoload.php';
   require_once './generated-conf/config.php';
 
-  use Portfolio\Semester;
+  use Portfolio\Hobby;
+  use Portfolio\HobbyItem;
 
-  $s = new Semester();
-  $s->setAbout('Semester about');
-  $s->save();
-  
+  use Portfolio\Semester;
+  use Portfolio\SemesterItem;
+
+
   $hobbies = array(
     'html' => [
       'title' => 'Hypertext Markdown Language',
       'description' => 'Budowanie responsywnych stron "O mnie" w HTML to moje ulubione zajęcie. Czasem, gdy nie mam co robić, po prostu odpalam edytor i zaczynam pisać od zera.',
       'listing' => [
         [
-          'year' => 'Rok 2017',
-          'description' => ' Udział w kursie z JFTT na 5 semestrze pozwolił mi posiąść wiedzę, która dała mi umiejętność stworzenia kompilatora
-          HTML. Moja świadomość HTML\'a wzrosła kilkukrotnie!',
+          'year' => 2017,
+          'description' => ' Udział w kursie z JFTT na 5 semestrze pozwolił mi posiąść wiedzę, która dała mi umiejętność stworzenia kompilatora HTML. Moja świadomość HTML\'a wzrosła kilkukrotnie!',
           'footer' => 'HTML compiler'
         ],
         [
-          'year' => 'Rok 2016',
-          'description' => 'W sieci trafiłem na artykuł, w którym polecono mi udział w wyzwaniu polegającym na pisaniu po jednej stronie
-           w HTML dziennie. Udało się - choć nie bez poświęceń. Zwięczeniem wyzwania było napisanie w pełni responsywnego
-           serwisu wiadomości 31 grudnia. Pamiętam jak dokładnie o 23:58 wysłałem ostateczną wersję do jury.',
+          'year' => 2016,
+          'description' => 'W sieci trafiłem na artykuł, w którym polecono mi udział w wyzwaniu polegającym na pisaniu po jednej stronie w HTML dziennie. Udało się - choć nie bez poświęceń. Zwięczeniem wyzwania było napisanie w pełni responsywnego serwisu wiadomości 31 grudnia. Pamiętam jak dokładnie o 23:58 wysłałem ostateczną wersję do jury.',
           'footer' => 'HTML - page a day challenge'
         ],
         [
-          'year' => 'Rok 2015',
+          'year' => 2015,
           'description' => 'Pierwsza strona napisana w HTMLu, już wtedy wiedziałem, że ten język to coś. Intuicyjny, prosty, zwięzły.
           To było coś! ',
           'footer' => 'Dlaczego nie zacząłem wcześniej?'
@@ -37,6 +35,22 @@
       ]
     ]
   );
+
+  foreach ($hobbies as $name => $details) {
+    $h = new Hobby();
+    $h->setName($name);
+    $h->setDescription($details['description']);
+    $h->setTitle($details['title']);
+    $h->save();
+    foreach($details['listing'] as $element) {
+      $el = new HobbyItem();
+      $el->setYear($element['year']);
+      $el->setFooter($element['footer']);
+      $el->setDescription($element['description']);
+      $el->setHobby($h);
+      $el->save();
+    }
+  }
 
   $semesters = array(
     1 => [
@@ -49,9 +63,7 @@
             'Jak obliczyć całkę',
             'Poznałem osobę Krystiana Karczyńskiego'
           ],
-          'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni,
-                          rozwiązać parę całek - 
-                          w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
+          'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni, rozwiązać parę całek - w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
         ],
         [
           'name' => 'Logika i struktury formalne',
@@ -172,3 +184,31 @@
       ]
     ]
   );
+
+  function joinBySemiColon($array) {
+    if (is_array($array)) {
+      return ';' . implode(';', $array);
+    }
+    return $array;
+  }
+
+  foreach ($semesters as $number => $details) {
+    $s = new Semester();
+    $s->setNumber($number);
+    $s->setAbout($details['about']);
+    $s->save();
+    foreach($details['subjects'] as $element) {
+      $el = new SemesterItem();
+      $el->setName($element['name']);
+
+      $joinedKnowledge = joinBySemiColon($element['knowledge']);
+      $el->setKnowledge($joinedKnowledge);
+
+      $joinedQuestions = joinBySemiColon($element['questions']);
+      $el->setQuestions($joinedQuestions);
+      $el->setSemester($s);
+      $el->save();
+    }
+  }
+
+

@@ -82,7 +82,7 @@ DESCRIPTION;
         $this->description
         $this->links
     </div>
-</body>'
+</body>
 HTML;
     }
 

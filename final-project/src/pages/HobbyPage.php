@@ -2,6 +2,7 @@
   require_once('PageInterface.php');
   require_once('BasePage.php');
   require_once(__DIR__ . '/../mocks/MockHobbies.php');
+  require_once(__DIR__ . '/../models/HobbyModel.php');
 
   class HobbyPage extends BasePage implements PageInterface
   {
@@ -50,7 +51,7 @@ DESCRIPTION;
         $curr_html = <<<ITEM
       <div class="row">
         <div class="col-1 listing filled">
-          <h3 class="header">$year</h3>
+          <h3 class="header">Rok $year</h3>
           <div class="content">
             <p>
               $description
@@ -78,7 +79,9 @@ ITEM;
       );
 
       $name = $matched['hobbyName'];
-      $data = MockHobbies::getHobbyDataByName($name);
+
+      $data = HobbyModel::create()->getByName($name);
+      // $data = MockHobbies::getHobbyDataByName($name);
 
       $page = new HobbyPage();
 

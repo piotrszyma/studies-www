@@ -2,17 +2,18 @@
 <database name="portfolio" defaultIdMethod="native" namespace="Portfolio">
  <table name="hobby" phpName="Hobby">
    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-   <column name="title" type="varchar" size="128" required="true" />
-   <column name="description" type="varchar" size="128" required="true" />
+   <column name="name" type="varchar" size="4096" required="true" />
+   <column name="title" type="varchar" size="4096" required="true" />
+   <column name="description" type="varchar" size="4096" required="true" />
  </table>
 
- <table name="hobby_listing" phpName="HobbyListing">
+ <table name="hobby_item" phpName="HobbyItem">
    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
    <column name="hobby_id" type="integer"/>
    
    <column name="year" type="integer" size="12" required="true" />
-   <column name="footer" type="varchar" size="128" required="true" />
-   <column name="description" type="varchar" size="128" required="true" />
+   <column name="footer" type="varchar" size="4096" required="true" />
+   <column name="description" type="varchar" size="4096" required="true" />
    
    <foreign-key foreignTable="hobby">
     <reference local="hobby_id" foreign="id"/>
@@ -21,16 +22,17 @@
 
  <table name="semester" phpName="Semester">
    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-   <column name="about" type="varchar" size="128" required="true" />
+   <column name="number" type="integer" required="true"/>
+   <column name="about" type="varchar" size="4096" required="true" />
  </table>
 
- <table name="semester_listing" phpName="semesterListing">
+ <table name="semester_item" phpName="SemesterItem">
    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
    <column name="semester_id" type="integer"/>
   
-   <column name="name" type="varchar" size="128" required="true" />
-   <column name="questions" type="varchar" size="128" required="true" />
-   <column name="knowledge" type="varchar" size="128" required="true" />
+   <column name="name" type="varchar" size="4096" required="true" />
+   <column name="questions" type="varchar" size="4096" required="true" />
+   <column name="knowledge" type="varchar" size="4096" required="true" />
    
    <foreign-key foreignTable="semester">
     <reference local="semester_id" foreign="id"/>

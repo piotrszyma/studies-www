@@ -1,0 +1,45 @@
+
+/* General */
+
+.container {
+  margin: 1% auto;
+  width: 60%;
+  background-color: rgba(197, 195, 198, 1);  
+}
+
+.header {
+  padding: 1rem;
+  font-size: 2rem;
+  background-color: rgba(76, 92, 104, 1);
+  color: rgba(220, 220, 221, 1);
+}
+
+.header h3 {
+  margin: 1rem 0;  
+}
+
+.description,
+.listing,
+.profile,
+.title {
+  padding: 1rem;
+}
+
+.title {
+  font-weight: 700;
+  padding: 1rem 1rem 0 1rem;
+}
+
+.profile {
+  display: flex;
+  align-items: flex-end;
+}
+
+.link {
+  border-bottom: 2px solid black;
+}
+
+.link:hover {
+  border-color: rgba(220, 220, 221, 1);
+  color: rgba(220, 220, 221, 1);
+}

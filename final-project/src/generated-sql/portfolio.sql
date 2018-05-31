@@ -10,24 +10,25 @@ DROP TABLE IF EXISTS "hobby" CASCADE;
 CREATE TABLE "hobby"
 (
     "id" serial NOT NULL,
-    "title" VARCHAR(128) NOT NULL,
-    "description" VARCHAR(128) NOT NULL,
+    "name" VARCHAR(4096) NOT NULL,
+    "title" VARCHAR(4096) NOT NULL,
+    "description" VARCHAR(4096) NOT NULL,
     PRIMARY KEY ("id")
 );
 
 -----------------------------------------------------------------------
--- hobby_listing
+-- hobby_item
 -----------------------------------------------------------------------
 
-DROP TABLE IF EXISTS "hobby_listing" CASCADE;
+DROP TABLE IF EXISTS "hobby_item" CASCADE;
 
-CREATE TABLE "hobby_listing"
+CREATE TABLE "hobby_item"
 (
     "id" serial NOT NULL,
     "hobby_id" INTEGER,
     "year" INTEGER NOT NULL,
-    "footer" VARCHAR(128) NOT NULL,
-    "description" VARCHAR(128) NOT NULL,
+    "footer" VARCHAR(4096) NOT NULL,
+    "description" VARCHAR(4096) NOT NULL,
     PRIMARY KEY ("id")
 );
 
@@ -40,23 +41,23 @@ DROP TABLE IF EXISTS "semester" CASCADE;
 CREATE TABLE "semester"
 (
     "id" serial NOT NULL,
-    "about" VARCHAR(128) NOT NULL,
+    "about" VARCHAR(4096) NOT NULL,
     PRIMARY KEY ("id")
 );
 
 -----------------------------------------------------------------------
--- semester_listing
+-- semester_item
 -----------------------------------------------------------------------
 
-DROP TABLE IF EXISTS "semester_listing" CASCADE;
+DROP TABLE IF EXISTS "semester_item" CASCADE;
 
-CREATE TABLE "semester_listing"
+CREATE TABLE "semester_item"
 (
     "id" serial NOT NULL,
     "semester_id" INTEGER,
-    "name" VARCHAR(128) NOT NULL,
-    "questions" VARCHAR(128) NOT NULL,
-    "knowledge" VARCHAR(128) NOT NULL,
+    "name" VARCHAR(4096) NOT NULL,
+    "questions" VARCHAR(4096) NOT NULL,
+    "knowledge" VARCHAR(4096) NOT NULL,
     PRIMARY KEY ("id")
 );
 
@@ -74,11 +75,11 @@ CREATE TABLE "opinion"
     PRIMARY KEY ("id")
 );
 
-ALTER TABLE "hobby_listing" ADD CONSTRAINT "hobby_listing_fk_fd3442"
+ALTER TABLE "hobby_item" ADD CONSTRAINT "hobby_item_fk_fd3442"
     FOREIGN KEY ("hobby_id")
     REFERENCES "hobby" ("id");
 
-ALTER TABLE "semester_listing" ADD CONSTRAINT "semester_listing_fk_d756b7"
+ALTER TABLE "semester_item" ADD CONSTRAINT "semester_item_fk_d756b7"
     FOREIGN KEY ("semester_id")
     REFERENCES "semester" ("id");
 
