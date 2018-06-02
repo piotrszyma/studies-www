@@ -39,15 +39,15 @@ HEADER;
           <form class="form">
             <div class="form__item">
               <span>Imię:</span>
-              <input name="name" placeholder="Wpisz tutaj swoje imię" maxlength="30" min="5" max="30" required></input>
+              <input data-type="field" name="name" placeholder="Wpisz tutaj swoje imię" required></input>
             </div>
             <div class="form__item">
               <span>Opinia:</span>
-              <textarea name="comment" placeholder="Wpisz tutaj swoją opinię dotyczącą przedmiotu" required></textarea>
+              <textarea data-type="field" name="comment" placeholder="Wpisz tutaj swoją opinię dotyczącą przedmiotu" required></textarea>
             </div>
             <div class="form__item">
               <span>Captcha:</span>
-              <input name="captcha" placeholder="Ile to jest 2+2^2" required></input>
+              <input data-type="field" name="captcha" placeholder="Ile to jest 2+2^2" required></input>
             </div>
             <div class="form__submit">
               <button>Submit</button>
@@ -58,9 +58,9 @@ HEADER;
 FORM;
     }
 
-    public function setBody() {
-      $this->body = <<<BODY
-      <div class="row body loading">
+    public function setBody($course_id) {
+      $this->body = '
+      <div class="row body loading" data-course="'. $course_id .'">
         <div class="col">
           <div class="loading__spinner">
             <div></div>
@@ -69,8 +69,7 @@ FORM;
             <div></div>
           </div>
         </div>
-      </div>
-BODY;
+      </div>';
     }
 
     public static function createInstance($url)
@@ -85,7 +84,6 @@ BODY;
       
       $page = new CoursePage();
       $scripts = '
-<script> const courseId = ' . $matches[1] . ' </script>
 <script src="/assets/js/course.js"></script>';
 
       $styles = <<<STYLES
@@ -100,7 +98,7 @@ STYLES;
       );
 
       $page->setForm();
-      $page->setBody();
+      $page->setBody($course_id);
 
       return $page;
     }

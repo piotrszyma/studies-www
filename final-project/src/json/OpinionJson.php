@@ -1,14 +1,13 @@
 <?php
 
 use Portfolio\OpinionQuery;
+use Portfolio\SemesterItemQuery;
+use Portfolio\Opinion;
 
-class OpinionJson {
-  public function __construct() {
-  }
+require_once 'BaseJson.php';
 
+class OpinionJson extends BaseJson {
   public static function createInstance($course_id) {
-    header("Content-Type: application/json");
-
     $request_method = $_SERVER['REQUEST_METHOD'];
 
     $json_object = new OpinionJson();
@@ -28,22 +27,52 @@ class OpinionJson {
   }
 
   public function handleGet($course_id) {
-    $opinions = [
-      [
-        "id" => 1,
-        "author" => "abc",
-        "comment" => "dolor es",
-        "created" => date('r'),
-      ],
-      [
-        "id" => 2,
-        "author" => "efg",
-        "comment" => "lorem ipsum",
-        "created" => date('r'),
-      ],
-    ];
-  
-    echo json_encode($opinions);
+    
+    $si = SemesterItemQuery::create()->findPk($course_id);
+
+    if ($si === null) {
+      echo json_encode(['success' => false]);
+      die();
+    }
+
+    $opinions = OpinionQuery::create()->filterBySemesterItem($si)->find();
+
+    $response_data = [];
+
+    foreach($opinions as $o) {
+      $response_data[] = [
+        'author' => $o->getAuthor(),
+        'comment' => $o->getComment(),
+        'created' => date_format($o->getCreated(), "Y-m-d H:i:s")
+      ];
+    }
+
+    echo json_encode($response_data);
     die();
+  }
+
+  public function handlePost($course_id) {
+    $payload = json_decode(file_get_contents('php://input'), true);
+    
+    $response = array();
+
+    try {
+      $si = SemesterItemQuery::create()->findPk($course_id);
+
+      $o = new Opinion();
+      $o->setAuthor($payload['name']);
+      $o->setComment($payload['comment']);
+      $o->setCreated(date('r'));
+      $o->setSemesterItem($si);
+      $o->save();
+
+      $response['data'] = $payload;
+      $response['success'] = true;
+      echo json_encode($response);
+    } catch(Exception $e) {
+      $response['success'] = false;
+      echo json_encode($response);
+    }
+    die(); 
   }
 }

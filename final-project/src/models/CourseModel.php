@@ -22,19 +22,9 @@ class CourseModel {
     if ($course === null) {
       return null;
     }
-
-    $opinions = OpinionQuery::create()->filterBySemesterItem($course);
-
-    $parsedOpinions = [];
-
-    foreach ($opinions as $o) {
-      var_dump($opinion->getText());
-    }
-
+    
     return array(
-      'name' => $course->getName(),
-      'semester' => 'Semester name',
-      'opinions' => []
+      'name' => $course->getName()
     );
 
   } 
