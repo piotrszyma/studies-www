@@ -30,6 +30,49 @@
 HEADER;
     }
 
+    public function setForm()
+    {
+      $this->form = <<<FORM
+      <div class="row">
+        <div class="col-1 form__wrapper">
+          <h3 class="form__header">Dodaj własną opinię na temat przedmiotu</h3>
+          <form class="form">
+            <div class="form__item">
+              <span>Imię:</span>
+              <input name="name" placeholder="Wpisz tutaj swoje imię" maxlength="30" min="5" max="30" required></input>
+            </div>
+            <div class="form__item">
+              <span>Opinia:</span>
+              <textarea name="comment" placeholder="Wpisz tutaj swoją opinię dotyczącą przedmiotu" required></textarea>
+            </div>
+            <div class="form__item">
+              <span>Captcha:</span>
+              <input name="captcha" placeholder="Ile to jest 2+2^2" required></input>
+            </div>
+            <div class="form__submit">
+              <button>Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+FORM;
+    }
+
+    public function setBody() {
+      $this->body = <<<BODY
+      <div class="row body loading">
+        <div class="col">
+          <div class="loading__spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+BODY;
+    }
+
     public static function createInstance($url)
     {
       preg_match('/\/course\/(\d+)/', $url, $matches);
@@ -41,13 +84,23 @@ HEADER;
       }
       
       $page = new CoursePage();
+      $scripts = '
+<script> const courseId = ' . $matches[1] . ' </script>
+<script src="/assets/js/course.js"></script>';
+
+      $styles = <<<STYLES
+<link rel="stylesheet" href="/assets/css/course.css">
+STYLES;
       $page->setName($data['name']);
-      $page->setHead($data['name']);
+      $page->setHead($data['name'], $scripts, $styles);
       $page->setHeader(
-        'Piotr Szyma',
-        'Student Informatyki WPPT',
-        $data['name']
+        $data['name'],
+        'Opinie o przedmiocie',
+        'Informatyka WPPT'
       );
+
+      $page->setForm();
+      $page->setBody();
 
       return $page;
     }
@@ -56,6 +109,8 @@ HEADER;
     {
       return <<<CONTENT
         $this->header
+        $this->body
+        $this->form
 CONTENT;
     }
   }

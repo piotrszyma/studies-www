@@ -44,7 +44,7 @@ HEADER;
       <div class="col-1 title">
         <span class="name">' . $name . '</span>
         <span>
-          <a href="course/' . $id .'">
+          <a href="../course/' . $id .'">
             <button class="button button--opinion">
               Sprawdź opinie
             </button>

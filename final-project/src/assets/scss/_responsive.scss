@@ -1,0 +1,21 @@
+
+.desktop {
+  display: initial;
+}
+
+@media only screen and (max-width: 1248px) {
+  .container {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 1248px) {
+  .row {
+    flex-direction: column;
+  }
+  .desktop {
+    display: none;
+  }
+}
+

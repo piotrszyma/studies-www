@@ -5,14 +5,17 @@
   {
     private $head;
 
-    protected function setHead($title)
+    protected function setHead($title, $scripts = '', $styles = '')
     {
       $this->head = '<head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
         <link rel="stylesheet" href="/assets/grid.css">
         <link rel="stylesheet" href="/assets/css/index.css">
+        ' . $styles . '
+        ' . $scripts . '
         <title>' . $title . '</title>
       </head>';
     }
@@ -34,16 +37,11 @@
       return <<<HTML
 <body>
     <div class="container">
-        $content
-      <div class="row">
-        <div class="col-1 back">
-            <div class="button">
-              <a href="/">
-                <span>Powrót</span>
-              </a>
-            </div>
+      $content
+      <div class="row footer">
+        <div class="col-1">
+          <span>Naciśnij <a class="link" href="/">tu</a>, aby powrócić do strony głównej</span></div>
         </div>
-      </div>
     </div>
 </body>
 HTML;

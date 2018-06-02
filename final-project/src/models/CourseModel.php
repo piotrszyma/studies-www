@@ -18,6 +18,7 @@ class CourseModel {
   }
   public function getById($id) {
     $course = SemesterItemQuery::create()->findPk($id);
+    
     if ($course === null) {
       return null;
     }
@@ -31,7 +32,7 @@ class CourseModel {
     }
 
     return array(
-      'name' => 'Course name',
+      'name' => $course->getName(),
       'semester' => 'Semester name',
       'opinions' => []
     );

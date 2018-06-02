@@ -1,6 +1,7 @@
 html, body {
   background-color: #dcdcdd;
-  font-size: 120%; }
+  font-size: 100%;
+  font-family: 'Roboto Condensed', sans-serif; }
 
 a {
   color: inherit;
@@ -76,9 +77,13 @@ button {
   border-color: #dcdcdd;
   color: #dcdcdd; }
 
-.opinion {
-  font-weight: 700;
-  padding-top: 1rem; }
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0; }
+  .footer span {
+    text-align: center; }
 
 .button--opinion {
   font-size: 0.75rem;
@@ -141,3 +146,17 @@ button {
 /* Back button */
 div.back {
   flex-direction: row-reverse; }
+
+.desktop {
+  display: initial; }
+
+@media only screen and (max-width: 1248px) {
+  .container {
+    margin: 0;
+    width: 100%; } }
+
+@media only screen and (max-width: 1248px) {
+  .row {
+    flex-direction: column; }
+  .desktop {
+    display: none; } }

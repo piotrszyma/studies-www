@@ -43,3 +43,12 @@
   border-color: rgba(220, 220, 221, 1);
   color: rgba(220, 220, 221, 1);
 }
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+  span {
+    text-align: center;
+  }
+}
