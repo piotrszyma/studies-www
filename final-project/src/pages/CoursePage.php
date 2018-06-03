@@ -99,14 +99,11 @@ HEADER;
       }
       
       $page = new CoursePage();
-      $scripts = '
-<script src="/assets/js/course.js"></script>';
-
-      $styles = <<<STYLES
-<link rel="stylesheet" href="/assets/css/course.css">
-STYLES;
       $page->setName($data['name']);
-      $page->setHead($data['name'], $scripts, $styles);
+      $page->setHead($data['name'],
+        '<script src="/assets/js/course.js"></script>',
+        '<link rel="stylesheet" href="/assets/css/course.min.css">'
+      );
       $page->setHeader(
         $data['name'],
         'Opinie o przedmiocie',

@@ -1,5 +1,6 @@
 .form {
-  font-size: 1rem; }
+  font-size: 1rem;
+  width: 50%; }
   .form__header {
     padding-bottom: 3rem; }
   .form__wrapper {
@@ -94,3 +95,11 @@
     padding: 0.5rem; }
   .opinion__body {
     padding: 0.5rem; }
+
+@media only screen and (max-width: 1248px) {
+  .form {
+    width: 100%; }
+  .form__item {
+    flex-direction: column; }
+    .form__item textarea {
+      width: inherit; } }

@@ -3,14 +3,18 @@
   display: initial;
 }
 
+
 @media only screen and (max-width: 1248px) {
   .container {
     margin: 0;
     width: 100%;
+    border-radius: 0;
   }
-}
+  
+  .header {
+    border-radius: 0;
+  }
 
-@media only screen and (max-width: 1248px) {
   .row {
     flex-direction: column;
   }

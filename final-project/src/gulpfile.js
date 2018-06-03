@@ -10,7 +10,7 @@ gulp.task('styles', function() {
 });
 
 gulp.task('minify', function() {
-  gulp.src('./assets/css/index.css')
+  gulp.src('./assets/css/*.css')
     .pipe(cleanCSS())
     .pipe(rename({
       suffix: '.min'

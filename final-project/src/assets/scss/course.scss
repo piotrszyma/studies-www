@@ -2,7 +2,7 @@
 
 .form {
   font-size: 1rem;
-
+  width: 50%;
 
   @include element('header') {
     padding-bottom: 3rem;
@@ -133,4 +133,19 @@
   @include element('body') {
     padding: 0.5rem;
   }
+}
+
+@media only screen and (max-width: 1248px) {
+  .form {
+    width: 100%;
+  }
+
+  .form__item {
+    flex-direction: column;
+    
+    textarea {
+      width: inherit;
+    }
+  }
+
 }

@@ -90,7 +90,7 @@ HTML;
     public static function createInstance($url)
     {
       $page = new HomePage();
-      $page->setHead('About page', '<script src="/assets/js/home.js"></script>', '<link href="/assets/css/home.css" rel="stylesheet">');
+      $page->setHead('About page', '<script src="/assets/js/home.js"></script>');
       $page->setHeader('Piotr Szyma', 'Student Informatyki WPPT');
       $page->setDescription(
         "Jestem entuzjastą informatyki pochodzącym z Częstochowy. Obecnie studiuję na Wydziale Podstawowych
