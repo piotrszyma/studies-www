@@ -60,7 +60,7 @@
           'name' => 'Analiza matematyczna 1',
           'knowledge' => [
             'Jak obsługiwać program Wolfram Alpha?',
-            'Jak obliczyć całkę',
+            'Jak obliczyć całkę, tj. czym jest $ \int_{a}^{b} x^2 dx $',
             'Poznałem osobę Krystiana Karczyńskiego'
           ],
           'questions' => 'Najlepiej byłoby regularnie, co kilka tygodni, rozwiązać parę całek - w przeciwnym wypadku wszystkie metody całkowania wypadają z głowy.'
@@ -69,7 +69,8 @@
           'name' => 'Logika i struktury formalne',
           'knowledge' => [
             'Poznałem wiele ciekawych zwrotów (spróbujmy to przeżyć, nie kupuję tego)',
-            'Poznałem język matematyczny'
+            'Poznałem język matematyczny',
+            'Dowiedziałem się co znaczą matematyczne znaki, m. in: $ \implies, \land, \lor, \Leftrightarrow $'
           ],
           'questions' => 'Rozwiązywać dużo problemów, żeby zbudować sprawność matematyczną.'
         ],
@@ -78,7 +79,7 @@
           'knowledge' => [
             'Zarys RSA',
             'Kompresja obrazów',
-            'Liczby zespolone',
+            'Liczby zespolone, tj. postaci $ z = a*i + b $',
             'Macierze',
             'Ciała, grupy, pierścienie',
           ],
@@ -92,7 +93,8 @@
         [
           'name' => 'Fizyka',
           'knowledge' => [
-            'Podstawy fizyki klasycznej'
+            'Podstawy fizyki klasycznej',
+            'Poznany wzór: $$ s = v * t $$'
           ],
           'questions' => 'Wciąż wiele założeń fizyki klasycznej jest dla mnie nieintuicyjnych'
         ],
@@ -170,7 +172,7 @@
         [
           'name' => 'Kryptografia',
           'knowledge' => [
-            'Poznałem, jakie matematyczne konstrukcje pozwalają na bezpieczne przesyłanie danych'
+            'Poznałem, jakie matematyczne konstrukcje pozwalają na bezpieczne przesyłanie danych',
           ],
           'questions' => 'Wiem, że dużo jeszcze przede mną.'
         ],

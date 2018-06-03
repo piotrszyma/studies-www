@@ -15,6 +15,7 @@
   <div class="col-1 header">
       <h1>$name</h1>
       <h2>$about</h2>
+      <h3>O mnie</h3>
   </div>
 </div>
 HEADER;
@@ -35,7 +36,7 @@ HEADER;
         </p>
       </div>
       <div class="col-1 profile desktop">
-        <img src="$image" alt="Moje zdjęcie">
+        <img src="/assets/photo-small.jpeg" alt="Moje zdjęcie">
       </div>
     </div>
 DESCRIPTION;
@@ -89,7 +90,7 @@ HTML;
     public static function createInstance($url)
     {
       $page = new HomePage();
-      $page->setHead('About page');
+      $page->setHead('About page', '<script src="/assets/js/home.js"></script>', '<link href="/assets/css/home.css" rel="stylesheet">');
       $page->setHeader('Piotr Szyma', 'Student Informatyki WPPT');
       $page->setDescription(
         "Jestem entuzjastą informatyki pochodzącym z Częstochowy. Obecnie studiuję na Wydziale Podstawowych

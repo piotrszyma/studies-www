@@ -1,28 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
 
-/* General */
+@import'variables.scss';
+@import'mixins.scss';
+
+body {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.profile,
+.title {
+  padding: 1rem;
+}
 
 .container {
   margin: 1% auto;
-  width: 60%;
-  background-color: rgba(197, 195, 198, 1);  
+  width: 70%;
+  background-color: $bg-light; 
+  @include top-border-radius(2 * $box-border);
+  @include bottom-border-radius(2 * $box-border);
 }
 
 .header {
   padding: 1rem;
   font-size: 2rem;
-  background-color: rgba(76, 92, 104, 1);
-  color: rgba(220, 220, 221, 1);
-}
+  background-color: $bg-primary;
+  color: $font-light;
+  @include top-border-radius(2 * $box-border);
 
-.header h3 {
-  margin: 1rem 0;  
-}
+  h1, h2 {
+    margin: 0.5rem;
+  }
 
-.description,
-.listing,
-.profile,
-.title {
-  padding: 1rem;
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 0;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  h3 {
+    margin: 0 0.5rem; 
+    font-size: 1rem;
+    font-weight: 100;
+  }
 }
 
 .title {
@@ -35,20 +58,19 @@
   align-items: flex-end;
 }
 
-.link {
-  border-bottom: 2px solid black;
+.link, a {
+  color: $font-default;
+  border-bottom: 1px dotted $font-default;
+  &:hover {
+    color: $font-light;
+    border-bottom-color: $font-light;
+  }
 }
 
-.link:hover {
-  border-color: rgba(220, 220, 221, 1);
-  color: rgba(220, 220, 221, 1);
-}
 .footer {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2rem 0;
-  span {
-    text-align: center;
-  }
+  text-align: center;
 }

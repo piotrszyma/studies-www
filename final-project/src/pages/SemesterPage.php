@@ -43,11 +43,9 @@ HEADER;
               <div class="row">
       <div class="col-1 title">
         <span class="name">' . $name . '</span>
-        <span>
+        <span class="title__opinions">
           <a href="../course/' . $id .'">
-            <button class="button button--opinion">
-              Sprawdź opinie
-            </button>
+            <div>Sprawdź opinie</div>
           </a>
         </span>
       </div>
@@ -87,7 +85,7 @@ HEADER;
       $semester_data = SemesterModel::create()->getByNumber($matched['semesterId']);
 
       $page = new SemesterPage($matched['semesterId']);
-      $page->setHead($matched['semesterId'] . ' semester');
+      $page->setHead($matched['semesterId'] . ' semester', '', '<link href="/assets/css/semester.css" rel="stylesheet">');
       $page->setHeader('Piotr Szyma', 'Student Informatyki WPPT', $semester_data['about']);
       $page->setSubjects($semester_data['subjects']);
 

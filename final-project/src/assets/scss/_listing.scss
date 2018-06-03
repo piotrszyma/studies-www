@@ -1,65 +1,73 @@
+@import 'variables.scss';
+@import 'mixins.scss';
 
 /* Listing */
-
-.listing a:hover {
-  color: rgba(220, 220, 221, 1);
-  background-color: rgba(76, 92, 104, 1);
+.description,
+.listing {
+  padding: 1rem;
 }
 
-.listing > h2 {
-  padding: 0.5rem;
-  color: rgba(220, 220, 221, 1);
-  background-color: rgba(76, 92, 104, 1);
-  line-height: 1.5rem;
+.listing {
+  & > h2 {
+    padding: 0.5rem;
+    color: $font-light;
+    background-color: $bg-primary;
+    line-height: 1.5rem;
+    border-radius: $box-border;
+  }
+  li {
+    list-style: circle;
+    margin-bottom: 0.2rem;
+  }
 }
 
-.filled .header {
-  font-size: 1.1rem;
-  line-height: 1.1rem;
-  color: rgba(220, 220, 221, 1);
-  background-color: rgba(76, 92, 104, 1);
-  padding: 0.5rem;
+.profile {
+  img {
+    width: 15em;
+  }
 }
 
-.filled .footer {
-  font-size: 1.1rem;
-  line-height: 1.1rem;
-  color: rgba(220, 220, 221, 1);
-  background-color: rgba(70, 73, 76, 1);
-  padding: 0.5rem;
+.filled {
+  .header {
+    font-size: 1.1rem;
+    line-height: 1.1rem;
+    color: $font-light;
+    background-color: $bg-primary;
+    padding: 0.5rem;
+    @include top-border-radius($box-border);
+  }
+
+  .footer {
+    font-size: 1.1rem;
+    line-height: 1.1rem;
+    color: $font-light;
+    background-color: $bg-dark;
+    padding: 0.5rem;
+  }
+
+  .content {
+    border-width: 0 2px 2px 2px;
+    border-color:  $bg-primary;
+    border-style: solid;
+    @include bottom-border-radius($box-border);
+
+    &.emphasis {
+      border-color: $bg-alternative; 
+    }
+
+    ol {
+      padding: 0.5rem;
+      -webkit-padding-start: 40px;
+    }
+
+    p {
+      padding: 0.5rem;
+    }
+  }
 }
 
-.filled .content {
-  border-width: 0 2px 2px 2px;
-  border-color:  rgba(76, 92, 104, 1);
-  border-style: solid;
-}
-
-.filled .content ol {
-  padding: 0.5rem;
-  -webkit-padding-start: 40px;
-  
-}
-
-.filled .content p {
-  padding: 0.5rem;
-}
 
 .header.emphasis {
-  background-color: #68564c;
-}
+  background-color: #68564c; 
 
-.content.emphasis {
-  border-color: #68564c; 
-}
-/* Image */
-
-.profile img {
-  width: 15em;
-}
-
-/* Back button */
-
-div.back {
-  flex-direction: row-reverse;
 }

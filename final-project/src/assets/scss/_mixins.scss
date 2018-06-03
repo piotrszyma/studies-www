@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 /// Block Element
 /// @access public
 /// @param {String} $element - Element's name
@@ -16,3 +18,18 @@
     }
 }
 
+@mixin shadow() {
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+
+@mixin top-border-radius($size) {
+  border-top-left-radius: $size;
+  border-top-right-radius: $size;
+}
+
+@mixin bottom-border-radius($size) {
+  border-bottom-left-radius: $size;
+  border-bottom-right-radius: $size;
+}

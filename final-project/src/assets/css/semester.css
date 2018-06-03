@@ -1,3 +1,6 @@
+.header h1 {
+  margin-bottom: 0; }
+
 .button--opinion {
   font-size: 0.75rem;
   width: 180px;
@@ -8,3 +11,21 @@
   .title .name {
     line-height: 2rem;
     font-size: 1rem; }
+
+.title__opinions {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 100; }
+  .title__opinions a {
+    border: none; }
+  .title__opinions div {
+    padding: 0.2rem;
+    background-color: #4c5c68;
+    color: #dcdcdd;
+    border-radius: 5px; }
+    .title__opinions div:hover {
+      background-color: #36424b; }

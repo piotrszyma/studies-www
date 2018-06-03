@@ -11,10 +11,15 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
         <link rel="stylesheet" href="/assets/grid.css">
         <link rel="stylesheet" href="/assets/css/index.css">
         ' . $styles . '
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [["$","$"],["\\\\(","\\\\)"]]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML-full"> </script>
         ' . $scripts . '
         <title>' . $title . '</title>
       </head>';

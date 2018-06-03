@@ -4,6 +4,8 @@ use Portfolio\OpinionQuery;
 use Portfolio\SemesterItemQuery;
 use Portfolio\Opinion;
 
+
+require_once(__DIR__ . '/../pages/CoursePage.php');
 require_once 'BaseJson.php';
 
 class OpinionJson extends BaseJson {
@@ -53,15 +55,36 @@ class OpinionJson extends BaseJson {
 
   public function handlePost($course_id) {
     $payload = json_decode(file_get_contents('php://input'), true);
-    
+
     $response = array();
+
+    $captcha = $payload['captcha'];
+    
+    $user_hash = $captcha['hash'];
+    $question = $captcha['question'];
+    $user_answer = $captcha['value'];
+
+    $expected_answer = CoursePage::$captcha[$question];
+    $expected_hash = hash_hmac('ripemd160', $question, CoursePage::$secret);
+    
+    if ($user_answer !== $expected_answer) {
+      $response['success'] = false;
+      echo json_encode($response);
+      die();
+    }
+
+    if ($user_hash !== $expected_hash) {
+      $response['success'] = false;
+      echo json_encode($response);
+      die();
+    }
 
     try {
       $si = SemesterItemQuery::create()->findPk($course_id);
 
       $o = new Opinion();
-      $o->setAuthor($payload['name']);
-      $o->setComment($payload['comment']);
+      $o->setAuthor($payload['name']['value']);
+      $o->setComment($payload['comment']['value']);
       $o->setCreated(date('r'));
       $o->setSemesterItem($si);
       $o->save();

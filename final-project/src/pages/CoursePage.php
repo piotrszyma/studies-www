@@ -3,9 +3,16 @@
   require_once('BasePage.php');
   require_once(__DIR__ . '/../mocks/MockHobbies.php');
   require_once(__DIR__ . '/../models/CourseModel.php');
+  require_once(__DIR__ . '/../json/OpinionJson.php');
 
   class CoursePage extends BasePage implements PageInterface
   {
+    public static $secret = 'aaaaasd';
+    public static $captcha = [
+      'Ile to 2 + 2 * 2?' => '6',
+      'Co zwróci NaN === NaN?' => 'false',
+      "Co zwróci 'foo' + + 'bar'?" => 'fooNaN',
+    ];
     private $name;
     private $header;
     private $body;
@@ -32,8 +39,12 @@ HEADER;
 
     public function setForm()
     {
-      $this->form = <<<FORM
-      <div class="row">
+      $question = array_keys(CoursePage::$captcha)[rand(0, count(CoursePage::$captcha) - 1)]; 
+
+      $hash = hash_hmac('ripemd160', $question, CoursePage::$secret);
+
+      $this->form = '
+      <div class="row dialog">
         <div class="col-1 form__wrapper">
           <h3 class="form__header">Dodaj własną opinię na temat przedmiotu</h3>
           <form class="form">
@@ -47,15 +58,20 @@ HEADER;
             </div>
             <div class="form__item">
               <span>Captcha:</span>
-              <input data-type="field" name="captcha" placeholder="Ile to jest 2+2^2" required></input>
+              <input data-type="field"
+                     data-hash="'. $hash .'"
+                     data-question="'.$question.'"
+                     name="captcha" 
+                     placeholder="'. $question .'"
+                     required
+              ></input>
             </div>
             <div class="form__submit">
-              <button>Submit</button>
+              <button>Wyślij</button>
             </div>
           </form>
         </div>
-      </div>
-FORM;
+      </div>';
     }
 
     public function setBody($course_id) {

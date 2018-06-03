@@ -3,6 +3,9 @@
 (() => {
 
   let bodyElement;
+  let captchaElement;
+  let formElement;
+  let formHeaderElement;
   let submitButton;
   let formItems;
   let courseId;
@@ -26,19 +29,37 @@
       </div>
     `;
 
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
   };
 
-  submitHandler = (event) => {
+  submitHandler = async (event) => {
     if (event.target.form.checkValidity()) {
       event.preventDefault();
       const formData = {};
 
       formItems.forEach(i => {
-        formData[i.name] = i.value;
+        formData[i.name] = { 'value': i.value };
+
+        if (i.name === 'captcha') {
+          formData[i.name]['question'] = i.dataset['question'];
+          formData[i.name]['hash'] = i.dataset['hash'];
+        }
       });
 
-      const response = post(`/opinion/${courseId}`, formData);
-      console.log("Valid!");
+      const response = await post(`/opinion/${courseId}`, formData);
+
+      if (!response.success) {
+        captchaElement.setCustomValidity('Zła odpowiedź');
+        captchaElement.reportValidity();
+        return;
+      }
+
+      formElement.remove();
+      formHeaderElement.innerHTML = 'Opinia została dodana pomyślnie!';
+
+      const data = await get(`/opinion/${courseId}`);
+
+      renderOpinions(data);
     }
   };
 
@@ -63,12 +84,20 @@
     bodyElement = document.querySelector('.body');
     submitButton = document.querySelector('.form button');
     formItems = document.querySelectorAll('[data-type=field]');
+    captchaElement = document.querySelector('input[name="captcha"]');
+    formElement =  document.querySelector('.form');
+    formHeaderElement = document.querySelector('.form__header');
     courseId = bodyElement.dataset.course;
 
     const data = await get(`/opinion/${courseId}`);
     renderOpinions(data);
 
     submitButton.addEventListener('click', submitHandler);
+
+    captchaElement.onchange = () => {
+      captchaElement.setCustomValidity('');
+      captchaElement.reportValidity();
+    };
 
     bodyElement.classList.remove('loading');
   };

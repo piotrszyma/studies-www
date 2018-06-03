@@ -24,11 +24,11 @@
     .form__item > * {
       padding: 5px; }
     .form__item input, .form__item textarea {
-      font-family: inherit;
-      font-size: 0.8rem;
       -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
       -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2); }
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+      font-family: inherit;
+      font-size: 0.8rem; }
       .form__item input:valid, .form__item textarea:valid {
         box-shadow: 0 0 5px 1px green; }
     .form__item span {

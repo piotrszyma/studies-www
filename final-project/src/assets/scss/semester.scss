@@ -1,3 +1,10 @@
+@import 'mixins.scss';
+
+.header {
+  h1 {
+    margin-bottom: 0;
+  }
+}
 
 .button--opinion {
   font-size: 0.75rem;
@@ -12,3 +19,29 @@
     font-size: 1rem;
   }
 }
+
+.title__opinions {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 100;
+
+  a {
+    border: none;
+  }
+
+  div {
+    padding: 0.2rem;
+    background-color: #4c5c68;
+    color: #dcdcdd;
+    border-radius: 5px;
+  
+    &:hover {
+        background-color: darken(#4c5c68, 10%)
+    }
+  }
+}
+
