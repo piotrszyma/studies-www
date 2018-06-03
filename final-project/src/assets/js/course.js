@@ -57,7 +57,7 @@
       formElement.remove();
       formHeaderElement.innerHTML = 'Opinia została dodana pomyślnie!';
 
-      const data = await get(`/opinion/${courseId}`);
+      const { data } = await get(`/opinion/${courseId}`);
 
       renderOpinions(data);
     }
@@ -89,14 +89,13 @@
     formHeaderElement = document.querySelector('.form__header');
     courseId = bodyElement.dataset.course;
 
-    const data = await get(`/opinion/${courseId}`);
+    const { data } = await get(`/opinion/${courseId}`);
     renderOpinions(data);
 
     submitButton.addEventListener('click', submitHandler);
 
     captchaElement.onchange = () => {
       captchaElement.setCustomValidity('');
-      captchaElement.reportValidity();
     };
 
     bodyElement.classList.remove('loading');

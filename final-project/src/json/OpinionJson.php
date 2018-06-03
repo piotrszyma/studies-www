@@ -33,8 +33,7 @@ class OpinionJson extends BaseJson {
     $si = SemesterItemQuery::create()->findPk($course_id);
 
     if ($si === null) {
-      echo json_encode(['success' => false]);
-      die();
+      $this->respondError();
     }
 
     $opinions = OpinionQuery::create()->filterBySemesterItem($si)->find();
@@ -49,8 +48,7 @@ class OpinionJson extends BaseJson {
       ];
     }
 
-    echo json_encode($response_data);
-    die();
+    $this->respondOk($response_data);
   }
 
   public function handlePost($course_id) {
@@ -68,15 +66,11 @@ class OpinionJson extends BaseJson {
     $expected_hash = hash_hmac('ripemd160', $question, CoursePage::$secret);
     
     if ($user_answer !== $expected_answer) {
-      $response['success'] = false;
-      echo json_encode($response);
-      die();
+      $this->respondError();
     }
 
     if ($user_hash !== $expected_hash) {
-      $response['success'] = false;
-      echo json_encode($response);
-      die();
+      $this->respondError();
     }
 
     try {
@@ -88,13 +82,9 @@ class OpinionJson extends BaseJson {
       $o->setCreated(date('r'));
       $o->setSemesterItem($si);
       $o->save();
-
-      $response['data'] = $payload;
-      $response['success'] = true;
-      echo json_encode($response);
+      $this->respondOk([]);
     } catch(Exception $e) {
-      $response['success'] = false;
-      echo json_encode($response);
+      $this->respondError();
     }
     die(); 
   }
